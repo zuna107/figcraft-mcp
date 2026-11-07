@@ -15,3 +15,4 @@
 - `tokens.py`: Neutral Anti-Slop UI tokens, banned patterns, and component recipes.
 - `client.py`: `FigCraftLive` Python SDK for script-driven automation.
 - `setup_cli.py`: Automatic configuration installer for Antigravity, Claude, Cursor, and Windsurf.
+

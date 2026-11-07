@@ -15,3 +15,4 @@
 ## Reporting a Vulnerability
 
 If you discover a security vulnerability within `figcraft-mcp`, please report it via [GitHub Security Advisories](https://github.com/zuna107/figcraft-mcp/security/advisories) or open a security issue on the repository rather than posting sensitive exploit details publicly.
+

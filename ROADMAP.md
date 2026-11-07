@@ -15,3 +15,4 @@ Planned enhancements for upcoming releases of **FigCraft-MCP**:
   - Automated accessibility contrast audit tool (`audit_screen_contrast`)
 - [ ] **v1.2.0**:
   - Direct Jetpack Compose (Material 3) & Tailwind CSS code exporter from selected FigCraft frames
+

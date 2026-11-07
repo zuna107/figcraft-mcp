@@ -44,3 +44,4 @@ Thank you for your interest in contributing to **FigCraft-MCP**! This document p
 1. Create a feature branch (`git checkout -b feat/your-feature`).
 2. Ensure all tests in `tests/test_server.py` pass (`python -m unittest discover -s tests`).
 3. Open a Pull Request against the `main` branch with a clear summary of your changes.
+

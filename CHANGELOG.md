@@ -18,3 +18,4 @@ All notable changes to **FigCraft-MCP** are documented in this file.
   - Added `plugin.json`, `.claude-plugin/plugin.json`, `rules/AGENTS.md`, `skills/figcraft/SKILL.md`, and `skills/anti-slop-ui/SKILL.md`.
 - **Python SDK (`FigCraftLive`)**:
   - Scriptable client in `src/figcraft_mcp/client.py` for automated multi-screen generation and UI auditing.
+

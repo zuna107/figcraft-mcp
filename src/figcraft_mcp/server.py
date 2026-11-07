@@ -237,6 +237,11 @@ class FigCraftMCPServer:
             )
             micro = []
             if c_name in ("node.create", "node.set"):
+                if c_name == "node.create" and params.get("type") == "text":
+                    if params.get("width") == 100:
+                        params.pop("width", None)
+                    if params.get("height") == 100:
+                        params.pop("height", None)
                 pid = params.get("parent")
                 px, py = self.node_origins.get(pid, (0.0, 0.0))
                 cx = px + float(params.get("x", 0.0)) + float(params.get("width", 30.0)) * 0.5
@@ -346,6 +351,19 @@ class FigCraftMCPServer:
 
             if tname == "batch":
                 return {"jsonrpc": "2.0", "id": req_id, "result": self._stream_batch(targs)}
+
+            if tname == "create_node" and targs.get("type") == "text":
+                if targs.get("width") == 100:
+                    targs.pop("width", None)
+                if targs.get("height") == 100:
+                    targs.pop("height", None)
+
+            if tname == "run_command" and targs.get("command") == "collab.join":
+                self._call_backend_tool("run_command", {"command": "pref.userName", "params": {"name": "Antigravity AI"}})
+                res = self._call_backend_tool(tname, targs)
+                time.sleep(0.8)
+                self._detect_live_doc()
+                return {"jsonrpc": "2.0", "id": req_id, "result": res}
 
             return {"jsonrpc": "2.0", "id": req_id, "result": self._call_backend_tool(tname, targs)}
 

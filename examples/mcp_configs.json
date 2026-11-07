@@ -1,0 +1,42 @@
+{
+  "antigravity_or_claude_or_cursor": {
+    "mcpServers": {
+      "figcraft": {
+        "command": "figcraft-mcp",
+        "args": [],
+        "env": {
+          "FIGCRAFT_PORT": "7979",
+          "FIGCRAFT_STREAM_STEPS": "1",
+          "FIGCRAFT_STREAM_DELAY_MS": "40"
+        }
+      }
+    }
+  },
+  "npx_zero_install": {
+    "mcpServers": {
+      "figcraft": {
+        "command": "npx",
+        "args": ["-y", "github:your-username/FigCraft-MCP"],
+        "env": {
+          "FIGCRAFT_PORT": "7979",
+          "FIGCRAFT_STREAM_STEPS": "1",
+          "FIGCRAFT_STREAM_DELAY_MS": "40"
+        }
+      }
+    }
+  },
+  "uvx_zero_install": {
+    "mcpServers": {
+      "figcraft": {
+        "command": "uvx",
+        "args": ["--from", "git+https://github.com/your-username/FigCraft-MCP", "figcraft-mcp"],
+        "env": {
+          "FIGCRAFT_PORT": "7979",
+          "FIGCRAFT_STREAM_STEPS": "1",
+          "FIGCRAFT_STREAM_DELAY_MS": "40"
+        }
+      }
+    }
+  }
+}
+

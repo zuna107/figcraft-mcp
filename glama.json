@@ -1,0 +1,7 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": ["FigCraft-MCP Contributors"],
+  "name": "figcraft-mcp",
+  "description": "Universal Live-Streaming MCP Server & Anti-Slop UI Design Engine for FigCraft Desktop"
+}
+

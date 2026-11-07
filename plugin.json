@@ -1,0 +1,13 @@
+{
+  "name": "figcraft-mcp",
+  "displayName": "FigCraft Live MCP & Anti-Slop UI",
+  "version": "1.0.0",
+  "description": "Live step-by-step UI design, vector iconography, interactive prototyping, and Anti-Slop UI design system for FigCraft Desktop.",
+  "logo": "assets/logo.svg",
+  "suggestedPrompts": [
+    "Design a clean, neutral mobile dashboard and review screen in FigCraft",
+    "Audit existing screens in FigCraft to remove AI-slop badges and loud colors",
+    "Connect interactive prototype flows across all frames on Page 1"
+  ]
+}
+

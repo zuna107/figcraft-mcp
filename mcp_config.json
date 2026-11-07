@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "figcraft": {
+      "command": "python",
+      "args": ["-m", "figcraft_mcp.server"],
+      "env": {
+        "FIGCRAFT_PORT": "7979",
+        "FIGCRAFT_STREAM_STEPS": "1",
+        "FIGCRAFT_STREAM_DELAY_MS": "40"
+      }
+    }
+  }
+}
+

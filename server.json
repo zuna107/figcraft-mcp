@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.zuna107/figcraft-mcp",
+  "description": "Live-streaming MCP server, vector icon library, and Anti-Slop UI design engine for FigCraft Desktop.",
+  "repository": {
+    "url": "https://github.com/zuna107/figcraft-mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registry_type": "pypi",
+      "identifier": "figcraft-mcp",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

@@ -47,7 +47,7 @@ def run_setup(repo_root: str = None) -> int:
         },
     }
 
-    print("=== MCP for FigCraft — Automatic Client Setup ===")
+    print("=== MCP for FigCraft - Automatic Client Setup ===")
     configured = 0
     for name, cfg_path in _client_config_paths():
         parent_dir = os.path.dirname(cfg_path)

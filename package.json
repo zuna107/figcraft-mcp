@@ -1,8 +1,16 @@
 {
   "name": "figcraft-mcp",
   "version": "1.0.0",
-  "description": "Universal Live-Streaming MCP Server & Anti-Slop UI Design Engine for FigCraft Desktop",
+  "description": "Universal Live-Streaming MCP Server and Anti-Slop UI Design Engine for FigCraft Desktop",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zuna107/figcraft-mcp.git"
+  },
+  "homepage": "https://github.com/zuna107/figcraft-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/zuna107/figcraft-mcp/issues"
+  },
   "bin": {
     "figcraft-mcp": "./bin/figcraft-mcp.cjs"
   },
@@ -25,4 +33,3 @@
     "node": ">=18.0.0"
   }
 }
-

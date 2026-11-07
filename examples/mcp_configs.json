@@ -16,7 +16,7 @@
     "mcpServers": {
       "figcraft": {
         "command": "npx",
-        "args": ["-y", "github:your-username/FigCraft-MCP"],
+        "args": ["-y", "github:zuna107/figcraft-mcp"],
         "env": {
           "FIGCRAFT_PORT": "7979",
           "FIGCRAFT_STREAM_STEPS": "1",
@@ -29,7 +29,7 @@
     "mcpServers": {
       "figcraft": {
         "command": "uvx",
-        "args": ["--from", "git+https://github.com/your-username/FigCraft-MCP", "figcraft-mcp"],
+        "args": ["--from", "git+https://github.com/zuna107/figcraft-mcp", "figcraft-mcp"],
         "env": {
           "FIGCRAFT_PORT": "7979",
           "FIGCRAFT_STREAM_STEPS": "1",
@@ -39,4 +39,3 @@
     }
   }
 }
-

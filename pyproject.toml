@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "figcraft-mcp"
 version = "1.0.0"
-description = "Universal Live-Streaming MCP Server & Anti-Slop UI Design Engine for FigCraft Desktop"
+description = "Universal Live-Streaming MCP Server and Anti-Slop UI Design Engine for FigCraft Desktop"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
 authors = [
-    { name = "FigCraft MCP Contributors" }
+    { name = "zuna107" }
 ]
 keywords = ["mcp", "model-context-protocol", "figcraft", "ui-design", "anti-slop-ui", "figma", "agent-skill"]
 classifiers = [
@@ -24,9 +24,14 @@ classifiers = [
 ]
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/zuna107/figcraft-mcp"
+Repository = "https://github.com/zuna107/figcraft-mcp"
+Issues = "https://github.com/zuna107/figcraft-mcp/issues"
+Changelog = "https://github.com/zuna107/figcraft-mcp/blob/main/CHANGELOG.md"
+
 [project.scripts]
 figcraft-mcp = "figcraft_mcp.server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

@@ -2,6 +2,12 @@
   "name": "figcraft-mcp",
   "displayName": "FigCraft Live MCP & Anti-Slop UI",
   "version": "1.0.0",
+  "author": {
+    "name": "zuna107",
+    "url": "https://github.com/zuna107"
+  },
+  "homepage": "https://github.com/zuna107/figcraft-mcp",
+  "repository": "https://github.com/zuna107/figcraft-mcp",
   "description": "Live step-by-step UI design, vector iconography, interactive prototyping, and Anti-Slop UI design system for FigCraft Desktop.",
   "logo": "assets/logo.svg",
   "suggestedPrompts": [
@@ -10,4 +16,3 @@
     "Connect interactive prototype flows across all frames on Page 1"
   ]
 }
-

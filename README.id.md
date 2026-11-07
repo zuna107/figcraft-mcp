@@ -42,11 +42,6 @@ Setiap elemen (`frame`, `rectangle`, `text`, `vector icon`) dibuat secara bertah
 Aturan **`anti-slop-ui`** bawaan mencegah model AI membuat gradien neon, badge dekoratif berlebihan (`"Hasil Scan Struk AI"`, `"AI Matched"`), kotak input berwarna mencolok, maupun emoji Unicode:
 
 <p align="center">
-  <img src="./assets/screenshots/01-auth-screens.png" alt="Screen 0B & Screen 0: Sign In dan Create Account" width="440" />
-  <img src="./assets/screenshots/02-dashboard-popups.jpg" alt="Screen 1, 2, 2B: Dashboard dan Popup Bottom Sheet" width="440" />
-</p>
-
-<p align="center">
   <img src="./assets/screenshots/03-review-searchable-dropdown.jpg" alt="Screen 3, 4, 4B: Review Transaction dan Searchable Scrollable Dropdown Netral" width="440" />
   <img src="./assets/screenshots/04-reports-and-wallets.jpg" alt="Screen 5, 5B, 6, 6B: Report (Expenses & Income) dan Manage Wallets" width="440" />
 </p>

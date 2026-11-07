@@ -42,11 +42,6 @@ Every layer (`frame`, `rectangle`, `text`, `vector icon`) is created step-by-ste
 Built-in **`anti-slop-ui`** rules prevent AI models from generating neon gradients, gratuitous `"AI Insight"` or `"AI Matched"` sparkle badges, loud orange/purple input boxes, or Unicode emojis:
 
 <p align="center">
-  <img src="./assets/screenshots/01-auth-screens.png" alt="Auth Screens: Sign In and Create Account" width="440" />
-  <img src="./assets/screenshots/02-dashboard-popups.jpg" alt="Dashboard and Popup Bottom Sheets with Locked Backdrops" width="440" />
-</p>
-
-<p align="center">
   <img src="./assets/screenshots/03-review-searchable-dropdown.jpg" alt="Review Transaction and Neutral Searchable Scrollable Dropdown" width="440" />
   <img src="./assets/screenshots/04-reports-and-wallets.jpg" alt="Reports (Expenses and Income) and Manage Wallets" width="440" />
 </p>

@@ -24,7 +24,7 @@ Berikan akses langsung secara *real-time* kepada **Google Antigravity**, **Curso
 
 Berbeda dari *bridge* CLI biasa yang menampilkan hasil desain secara kaku sekaligus atau menghasilkan tampilan klise (*AI slop*), **FigCraft-MCP** mengeksekusi setiap komponen secara bertahap dengan pergerakan kursor multiplayer langsung (`~40ms/elemen`) serta menerapkan standar desain **Anti-Slop UI** setara **Shadcn UI**, **Radix Primitives**, dan **Apple HIG**.
 
-[**Lihat panduan instalasi cepat ->**](#instalasi-cepat-quickstart)
+[**Lihat panduan instalasi cepat ->**](#instalasi-cepat-quickstart) · [**Lihat panduan penggunaan langkah demi langkah ->**](#cara-penggunaan-dengan-figcraft-desktop)
 
 ---
 
@@ -154,15 +154,41 @@ git clone https://github.com/zuna107/figcraft-mcp.git ".agents\plugins\figcraft-
 
 ## Cara Penggunaan dengan FigCraft Desktop
 
-1. **Koneksi Otomatis ke Aplikasi Desktop (`--control 7979`)**:
-   - Saat AI Agent memanggil tool `figcraft`, server memeriksa port TCP `7979`. Jika FigCraft Desktop belum terbuka, aplikasi akan dijalankan otomatis dengan mode `--control 7979`.
-2. **Mendukung Mode Sesi Langsung (`Bagikan -> Sesi langsung`)**:
-   - Apabila Anda sedang membuka ruang kolaborasi langsung, `figcraft-mcp` otomatis mendeteksi dokumen dengan status `live` melalui `doc.list` dan `collab.peers` sehingga seluruh perubahan langsung tampil di layar Anda.
-3. **Contoh Perintah (Prompt) ke AI Agent**:
-   - *"Buat Screen Sign In dan Create Account berdampingan menggunakan panduan anti-slop-ui dengan tab switcher netral."*
-   - *"Ubah bagian Category pada Screen 4 menjadi menu dropdown ringkas yang memiliki kolom search, scrollbar vertikal di dalamnya, dan opsi `+ Category Baru` ketika kategori tidak ditemukan."*
-   - *"Audit Screen 5 dan Screen 6 agar warnanya netral, hapus badge AI yang terlalu ramai, dan letakkan tombol `+ Add Wallet` tepat di bawah kartu Total Assets."*
-   - *"Buat koneksi prototype flow untuk seluruh layar di Page 1."*
+Ikuti panduan langkah demi langkah berikut untuk mendesain, menginspeksi, mengaudit, dan membuat prototype layar UI secara langsung di FigCraft Desktop:
+
+### Langkah 1: Buka FigCraft Desktop & Atur Bahasa Antarmuka (Opsional)
+1. Anda **tidak perlu** menjalankan perintah khusus secara manual. Ketika AI Agent memanggil tool `figcraft`, `figcraft-mcp` otomatis memeriksa port TCP `7979` dan menjalankan aplikasi **FigCraft Desktop** dengan argumen `--control 7979` apabila belum terbuka.
+2. Jika Anda membuka FigCraft Desktop sendiri melalui terminal atau shortcut, tambahkan flag `--control 7979`:
+   ```powershell
+   "C:\Program Files\ArtCraft\FigCraft\figcraft.exe" --control 7979
+   ```
+3. **Mengubah Bahasa Aplikasi FigCraft:** Tekan `Ctrl + ,` (atau klik ikon menu kiri atas -> `Edit` -> `Preferences` / `Preferensi` -> `Interface Language` / `Bahasa Antarmuka`) untuk mengganti bahasa tampilan antara `English` dan `Bahasa Indonesia`, atau minta AI menjalankan perintah `pref.language` dengan `{"language": "en"}` atau `{"language": "id"}`.
+
+### Langkah 2: Hubungkan Kanvas Anda (Pilih Mode A atau Mode B)
+
+#### Mode A: Koneksi Lokal Otomatis Tanpa Klik (Default)
+- Cukup buka file `.figcraft` (atau buat tab baru) di FigCraft Desktop lalu kirim instruksi di aplikasi AI Anda.
+- `figcraft-mcp` otomatis terhubung ke dokumen aktif dan mengeksekusi setiap `frame`, `rectangle`, `text`, serta `vector icon` satu per satu (`~40ms/elemen`) lengkap dengan *highlight* seleksi secara langsung.
+
+#### Mode B: Sesi Kolaborasi Langsung & Kursor Multiplayer AI (`Share -> Live Session`)
+- Ingin melihat kursor multiplayer ungu **`Antigravity AI`** bergerak secara *real-time* di atas kanvas saat AI menggambar komponen?
+  1. Klik tombol **`Share` -> `Live Session`** (atau **`Bagikan` -> `Sesi langsung`**) di pojok kanan atas FigCraft Desktop, atau minta AI memulai sesi kolaborasi lokal melalui `collab.share` (`{"via": "local"}`).
+  2. `figcraft-mcp` otomatis mendeteksi tab dokumen berstatus `live` melalui `doc.list` dan `collab.peers`, lalu mengirimkan koordinat kursor (`collab.cursor`) secara langsung sembari menyusun elemen di kanvas Anda.
+
+### Langkah 3: Berikan Instruksi (Prompt) ke AI Agent
+
+Anda dapat memberikan perintah dalam bahasa alami. Berikut tahapan alur kerja yang direkomendasikan:
+
+1. **Membuat Layar UI Baru dari PRD (Standar Anti-Slop UI)**
+   > *"Buat Screen Sign In dan Create Account berdampingan (360x800) mengikuti aturan anti-slop-ui dengan segmented tab switcher netral dan ikon vektor Lucide."*
+2. **Membuat Popup Bottom Sheet & Menu Dropdown dengan Search + Scroll**
+   > *"Buat Popup Bottom Sheet untuk Screen 2 dan Screen 3 di atas backdrop Screen 1 yang dikunci dengan scrim gelap 45%."*
+   > *"Ubah bagian Category pada Screen 4 menjadi menu dropdown ringkas (tinggi maks 180px) dengan kolom search, scrollbar vertikal 4px di dalam menu, dan opsi `+ Category Baru` ketika kategori belum tersedia."*
+3. **Mengaudit & Merapikan Layar dari AI Slop**
+   > *"Audit Screen 5 dan Screen 6 menggunakan standar anti-slop-ui: hapus badge AI yang berlebihan, gunakan warna netral, dan pindahkan tombol `+ Add Wallet` tepat di bawah kartu Total Assets."*
+4. **Menghubungkan & Menguji Alur Prototype Interaktif**
+   > *"Hubungkan seluruh layar di Page 1 dengan transisi prototype interaktif (`smartAnimate` untuk pergantian tab, `slideIn` untuk popup bottom sheet, dan `push` untuk perpindahan halaman)."*
+   - Untuk mencoba hasilnya di FigCraft Desktop, buka tab **`Prototype`** di panel kanan atau klik tombol **Play (`▶`)** di pojok kanan atas.
 
 ---
 
@@ -187,6 +213,19 @@ Selain meneruskan 22 tool bawaan `figcraft-cli` (`inspect_document`, `get_node`,
 | **Menu Dropdown Kategori** | Trigger oranye terang (`#FFF7ED`), pill `"AI Matched"`, daftar memanjang tanpa batas | Menu ringkas `180px` `#FFFFFF`, border `#CBD5E1`, baris aktif `#F1F5F9`, scrollbar vertikal `4px`, dan baris `+ Category Baru` |
 | **Ikonografi** | Emoji Unicode (`🍔`, `🚗`, `💰`, `✨`) | 100% ikon garis vektor **Lucide 24x24** melalui `place_lucide_icon` |
 | **Popup & Bottom Sheet** | Melayang di atas kotak hitam kosong | Menduplikasi layar induk sebagai *locked backdrop* di belakang *scrim* `#0F172A` (`45%` opacity) |
+
+---
+
+## Variabel Lingkungan (Environment Variables)
+
+| Variabel | Default | Keterangan |
+| :--- | :--- | :--- |
+| `FIGCRAFT_PORT` | `7979` | Port kontrol TCP untuk terhubung ke aplikasi FigCraft Desktop yang sedang berjalan. |
+| `FIGCRAFT_STREAM_STEPS` | `1` | `1` mengeksekusi perintah `batch` satu per satu dengan kursor live; `0` mengeksekusi sekaligus. |
+| `FIGCRAFT_STREAM_DELAY_MS` | `40` | Jeda waktu antar elemen saat live streaming (`40ms` = 25 elemen/detik). |
+| `FIGCRAFT_DEFAULT_DOC` | *(kosong)* | Lokasi file `.figcraft` opsional untuk dibuka otomatis saat menjalankan FigCraft Desktop. |
+| `FIGCRAFT_CLI_PATH` | *(otomatis)* | Path khusus menuju file executable `figcraft-cli`. |
+| `FIGCRAFT_APP_PATH` | *(otomatis)* | Path khusus menuju aplikasi desktop `figcraft`. |
 
 ---
 

@@ -24,7 +24,7 @@ Give **Google Antigravity**, **Cursor**, **Claude Code**, **Claude Desktop**, **
 
 Unlike static CLI bridges that dump layouts in a single frozen frame or generate noisy "AI slop" interfaces, **FigCraft-MCP** streams every element step-by-step with a live multiplayer cursor (`~40ms/element`) and enforces a strict **Anti-Slop UI** design system inspired by **Shadcn UI**, **Radix Primitives**, and **Apple HIG**.
 
-[**See quickstart instructions ->**](#quickstart)
+[**See quickstart instructions ->**](#quickstart) · [**See step-by-step usage guide ->**](#how-to-use-with-figcraft-desktop)
 
 ---
 
@@ -172,15 +172,41 @@ git clone https://github.com/zuna107/figcraft-mcp.git .agents/plugins/figcraft-m
 
 ## How to Use with FigCraft Desktop
 
-1. **Automatic Desktop Attachment (`--control 7979`)**:
-   - When your AI agent calls any `figcraft` MCP tool, `figcraft-mcp` probes TCP port `7979`. If FigCraft Desktop is not running yet, it automatically launches the visible desktop app with `--control 7979`.
-2. **Live Collaboration Sessions (`Sesi langsung`)**:
-   - If you start or join a **Live Collaboration Session** (`Bagikan` -> `Sesi langsung` in the top-right corner of FigCraft), `figcraft-mcp` inspects `doc.list` and `collab.peers` to automatically lock onto the active `live` document and stream every edit directly onto your screen.
-3. **Example Prompts to Try**:
-   - *"Create Sign In and Create Account screens side-by-side following the anti-slop-ui guidelines with a clean segmented tab switcher."*
-   - *"Update Screen 4 to use a compact searchable category dropdown with an internal vertical scrollbar and a `+ Category Baru` option when a search query is not found."*
-   - *"Audit Screen 5 and Screen 6 to remove AI-slop badges, use neutral colors, and place `+ Add Wallet` directly below the Total Assets card."*
-   - *"Wire interactive prototype flows across all screens on Page 1."*
+Follow these step-by-step instructions to design, inspect, audit, and prototype UI screens live in FigCraft Desktop:
+
+### Step 1: Launch FigCraft Desktop & Configure Preferences (Optional)
+1. You do **not** need to pass any special command-line flags manually. When your AI agent calls any `figcraft` MCP tool, `figcraft-mcp` checks TCP port `7979` and automatically launches the visible **FigCraft Desktop** window with `--control 7979` if it is not running yet.
+2. If you launch FigCraft Desktop yourself from a terminal or shortcut, include `--control 7979`:
+   ```powershell
+   "C:\Program Files\ArtCraft\FigCraft\figcraft.exe" --control 7979
+   ```
+3. **Switching Interface Language:** Press `Ctrl + ,` (or click the top-left menu icon -> `Edit` -> `Preferences` -> `Interface Language`) to switch the FigCraft Desktop UI language (e.g., `English`), or ask your AI agent to run `pref.language` with `{"language": "en"}`.
+
+### Step 2: Connect Your Canvas (Choose Mode A or Mode B)
+
+#### Mode A: Zero-Click Local Control (Default)
+- Simply open any `.figcraft` file (or start a new tab) in FigCraft Desktop and send a prompt in your AI IDE.
+- `figcraft-mcp` automatically locks onto your active document and streams every `frame`, `rectangle`, `text`, and `vector icon` step-by-step (`~40ms/element`) with live bounding-box selection highlights.
+
+#### Mode B: Live Collaboration Session & Multiplayer AI Cursor (`Share -> Live Session`)
+- Want to see the purple **`Antigravity AI`** multiplayer cursor move across your canvas in real time?
+  1. In the top-right corner of FigCraft Desktop, click **`Share`** -> **`Live Session`** (or ask your AI agent to start a local live session via `collab.share` with `{"via": "local"}`).
+  2. `figcraft-mcp` automatically inspects `doc.list` and `collab.peers` to attach to the active `live` session tab and broadcasts real-time cursor coordinates (`collab.cursor`) as it builds and edits components on your canvas.
+
+### Step 3: Prompt Your AI Agent (Step-by-Step Workflow)
+
+You can talk to your AI agent in natural language. Here is the recommended workflow:
+
+1. **Generate Clean UI Screens from Requirements (Anti-Slop UI Enabled)**
+   > *"Create Sign In and Create Account screens side-by-side (360x800) following the anti-slop-ui guidelines with a clean neutral segmented tab switcher and Lucide vector icons."*
+2. **Build Interactive Overlays & Searchable Components**
+   > *"Create Popup Bottom Sheets for Screen 2 and Screen 3 using Screen 1 as a locked backdrop behind a 45% dark scrim."*
+   > *"Update Screen 4 to use a compact searchable category dropdown (max 180px height) with an internal 4px vertical scrollbar and a `+ New Category` option when a search query is not found."*
+3. **Audit & Refactor Existing Screens to Remove AI Slop**
+   > *"Audit Screen 5 and Screen 6 using anti-slop-ui rules: remove decorative AI sparkle badges, keep colors neutral, and place the `+ Add Wallet` button directly below the Total Assets card."*
+4. **Wire & Test Interactive Prototype Flows**
+   > *"Connect all screens on Page 1 with interactive prototype transitions (`smartAnimate` for tabs, `slideIn` for bottom sheets, `push` for screen navigation)."*
+   - To test the interactive flow in FigCraft Desktop, switch the right sidebar to the **`Prototype`** tab or click the **Play (`▶`)** button in the top-right toolbar.
 
 ---
 
@@ -202,9 +228,9 @@ Every agent using `figcraft-mcp` is guided by the bundled [`anti-slop-ui`](./ski
 
 | Component | AI Slop Pattern (Banned) | FigCraft-MCP Standard (Enforced) |
 | :--- | :--- | :--- |
-| **Headers & Summary Cards** | Gratuitous purple/pink badges (`✨ Hasil Scan Struk AI`, `📈 18% vs Feb`, `✨ Food is your largest category`) | Clean typographic hierarchy (`#1E1E2D` Bold & `#8F92A1` Muted) with zero decorative clutter |
+| **Headers & Summary Cards** | Gratuitous purple/pink badges (`✨ AI Receipt Scan Result`, `📈 18% vs Feb`, `✨ Food is your largest category`) | Clean typographic hierarchy (`#1E1E2D` Bold & `#8F92A1` Muted) with zero decorative clutter |
 | **Segmented Tab Switchers** | Colored red/green arrows or icons inside tabs | Neutral `#F1F2F6` track, `#FFFFFF` active pill, centered text only (`#1E1E2D` / `#8F92A1`) |
-| **Category Dropdowns** | Bright orange/purple fills (`#FFF7ED`), `"AI Matched"` pills, unscrollable tall lists | Compact `180px` `#FFFFFF` menu, `#CBD5E1` border, `#F1F5F9` active row, `4px` vertical scrollbar, and clean `+ Category Baru` action |
+| **Category Dropdowns** | Bright orange/purple fills (`#FFF7ED`), `"AI Matched"` pills, unscrollable tall lists | Compact `180px` `#FFFFFF` menu, `#CBD5E1` border, `#F1F5F9` active row, `4px` vertical scrollbar, and clean `+ New Category` action |
 | **Iconography** | Inconsistent Unicode emojis (`🍔`, `🚗`, `💰`, `✨`) | 100% crisp 24x24 **Lucide vector stroke icons** via `place_lucide_icon` |
 | **Popups & Bottom Sheets** | Floating sheet over an empty black box | Parent screen duplicated as a locked backdrop behind a `45%` `#0F172A` scrim |
 

@@ -107,6 +107,8 @@ class FigCraftMCPServer:
         self._internal_seq = 900000
         self.live_doc_id = None
         self.node_origins = {}
+        self.peer_proc = None
+        self.peer_seq = 1000
 
     def _rpc_backend(self, method: str, params: dict):
         self._internal_seq += 1
@@ -125,9 +127,61 @@ class FigCraftMCPServer:
     def _call_backend_tool(self, name: str, arguments: dict):
         if self.live_doc_id is not None and "document" not in arguments:
             if name not in ("open_file", "pointer", "key", "type_text", "inspect_ui", "list_commands"):
-                arguments = {**arguments, "document": self.live_doc_id}
+                cmd_name = arguments.get("command") if name == "run_command" else None
+                if cmd_name not in ("collab.peers", "doc.list", "pref.userName", "collab.share"):
+                    arguments = {**arguments, "document": self.live_doc_id}
         res = self._rpc_backend("tools/call", {"name": name, "arguments": arguments})
         return res.get("result", {"content": [{"type": "text", "text": json.dumps(res.get("error", {}))} ], "isError": True})
+
+    def _ensure_peer_joined(self, peers_info: dict):
+        """Ensure a headless collaborator peer 'Antigravity AI' is joined to the live session."""
+        if self.peer_proc and self.peer_proc.poll() is None:
+            return
+        link = peers_info.get("url") or peers_info.get("link")
+        if not link:
+            return
+        try:
+            self.peer_proc = subprocess.Popen(
+                [resolve_cli_path(), "mcp"],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=sys.stderr,
+                text=True,
+                encoding="utf-8",
+                bufsize=1,
+            )
+            # Initialize & join
+            self._send_peer("initialize", {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "antigravity-ai-peer", "version": "1.0"}})
+            self._send_peer("tools/call", {"name": "run_command", "arguments": {"command": "pref.userName", "params": {"name": "Antigravity AI"}}})
+            self._send_peer("tools/call", {"name": "run_command", "arguments": {"command": "collab.join", "params": {"link": link}}})
+        except Exception as exc:
+            sys.stderr.write(f"[figcraft-mcp] Could not spawn live peer: {exc}\n")
+
+    def _send_peer(self, method: str, params: dict):
+        if not self.peer_proc or self.peer_proc.poll() is not None:
+            return None
+        self.peer_seq += 1
+        req_id = self.peer_seq
+        msg = {"jsonrpc": "2.0", "id": req_id, "method": method, "params": params}
+        self.peer_proc.stdin.write(json.dumps(msg, separators=(",", ":")) + "\n")
+        self.peer_proc.stdin.flush()
+        while True:
+            line = self.peer_proc.stdout.readline()
+            if not line:
+                return None
+            try:
+                res = json.loads(line)
+                if res.get("id") == req_id:
+                    return res
+            except Exception:
+                continue
+
+    def _peer_cursor(self, x: float, y: float):
+        if self.peer_proc and self.peer_proc.poll() is None:
+            try:
+                self._send_peer("tools/call", {"name": "run_command", "arguments": {"command": "collab.cursor", "params": {"x": x, "y": y}}})
+            except Exception:
+                pass
 
     def _detect_live_doc(self):
         try:
@@ -136,12 +190,17 @@ class FigCraftMCPServer:
             docs = json.loads(txt)
             if not isinstance(docs, list) or not docs:
                 return
-            for d in sorted(docs, key=lambda x: 0 if x.get("active") else 1):
-                p_res = self._call_backend_tool("run_command", {"command": "collab.peers", "document": d["id"]})
-                peers = json.loads(p_res.get("content", [{}])[0].get("text", "{}"))
-                if isinstance(peers, dict) and peers.get("status") == "live":
-                    self.live_doc_id = d["id"]
-                    return
+            p_res = self._call_backend_tool("run_command", {"command": "collab.peers"})
+            peers = json.loads(p_res.get("content", [{}])[0].get("text", "{}"))
+            if isinstance(peers, dict) and peers.get("status") == "live":
+                for d in docs:
+                    if d.get("active"):
+                        self.live_doc_id = d["id"]
+                        self._ensure_peer_joined(peers)
+                        return
+                self.live_doc_id = docs[0]["id"]
+                self._ensure_peer_joined(peers)
+                return
             self.live_doc_id = docs[0]["id"]
         except Exception:
             pass
@@ -184,6 +243,7 @@ class FigCraftMCPServer:
                 cy = py + float(params.get("y", 0.0)) + float(params.get("height", 20.0)) * 0.5
                 if cx != 0.0 or cy != 0.0:
                     micro.append({"command": "collab.cursor", "params": {"x": cx, "y": cy}})
+                    self._peer_cursor(cx, cy)
                 if c_name == "node.create":
                     params["select"] = True
 

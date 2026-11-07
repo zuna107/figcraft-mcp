@@ -22,7 +22,7 @@
 
 Berikan akses langsung secara *real-time* kepada **Google Antigravity**, **Cursor**, **Claude Code**, **Claude Desktop**, **Windsurf**, dan AI coding agent lainnya untuk mengendalikan kanvas **FigCraft Desktop** Anda melalui server [Model Context Protocol](https://modelcontextprotocol.io/) ini.
 
-Berbeda dari *bridge* CLI biasa yang menampilkan hasil desain secara kaku sekaligus atau menghasilkan tampilan klise (*AI slop*), **FigCraft-MCP** mengeksekusi setiap komponen secara bertahap dengan pergerakan kursor multiplayer langsung (`~40ms/elemen`) serta menerapkan standar desain **Anti-Slop UI** setara **Shadcn UI**, **Radix Primitives**, dan **Apple HIG**.
+Berbeda dari *bridge* CLI biasa yang menampilkan hasil desain secara kaku sekaligus atau menghasilkan tampilan klise (*AI slop*), **FigCraft-MCP** mengeksekusi setiap komponen secara bertahap dengan pergerakan kursor multiplayer langsung (`~85ms/elemen`) serta menerapkan standar desain **Anti-Slop UI** setara **Shadcn UI**, **Radix Primitives**, dan **Apple HIG**.
 
 [**Lihat panduan instalasi cepat ->**](#instalasi-cepat-quickstart) · [**Lihat panduan penggunaan langkah demi langkah ->**](#cara-penggunaan-dengan-figcraft-desktop)
 
@@ -31,7 +31,7 @@ Berbeda dari *bridge* CLI biasa yang menampilkan hasil desain secara kaku sekali
 ## Galeri Visual & Demo
 
 ### 1. Kursor Multiplayer Real-Time & Live Streaming Bertahap
-Setiap elemen (`frame`, `rectangle`, `text`, `vector icon`) dibuat secara bertahap dan cepat (`40ms/elemen`) disertai pergerakan kursor multiplayer (`Antigravity AI`) dan *highlight* seleksi langsung di atas kanvas FigCraft Anda:
+Setiap elemen (`frame`, `rectangle`, `text`, `vector icon`) dibuat secara bertahap dan cepat (`85ms/elemen`) disertai pergerakan kursor multiplayer (`Antigravity AI`) dan *highlight* seleksi langsung di atas kanvas FigCraft Anda:
 
 <p align="center">
   <img src="./assets/screenshots/05-live-cursor-streaming.jpg" alt="Live Cursor Streaming pada Auth Screen di FigCraft" width="440" />
@@ -106,7 +106,7 @@ Setelah selesai, **tutup dan buka kembali aplikasi AI / IDE Anda**, buka **FigCr
       "env": {
         "FIGCRAFT_PORT": "7979",
         "FIGCRAFT_STREAM_STEPS": "1",
-        "FIGCRAFT_STREAM_DELAY_MS": "40"
+        "FIGCRAFT_STREAM_DELAY_MS": "85"
       }
     }
   }
@@ -124,7 +124,7 @@ Atau jalankan tanpa instalasi menggunakan **Node.js (`npx`)**:
       "env": {
         "FIGCRAFT_PORT": "7979",
         "FIGCRAFT_STREAM_STEPS": "1",
-        "FIGCRAFT_STREAM_DELAY_MS": "40"
+        "FIGCRAFT_STREAM_DELAY_MS": "85"
       }
     }
   }
@@ -151,19 +151,18 @@ git clone https://github.com/zuna107/figcraft-mcp.git ".agents\plugins\figcraft-
 
 Ikuti panduan langkah demi langkah berikut untuk mendesain, menginspeksi, mengaudit, dan membuat prototype layar UI secara langsung di FigCraft Desktop:
 
-### Langkah 1: Buka FigCraft Desktop & Atur Bahasa Antarmuka (Opsional)
+### Langkah 1: Buka FigCraft Desktop
 1. Anda **tidak perlu** menjalankan perintah khusus secara manual. Ketika AI Agent memanggil tool `figcraft`, `figcraft-mcp` otomatis memeriksa port TCP `7979` dan menjalankan aplikasi **FigCraft Desktop** dengan argumen `--control 7979` apabila belum terbuka.
 2. Jika Anda membuka FigCraft Desktop sendiri melalui terminal atau shortcut, tambahkan flag `--control 7979`:
    ```powershell
    "C:\Program Files\ArtCraft\FigCraft\figcraft.exe" --control 7979
    ```
-3. **Mengubah Bahasa Aplikasi FigCraft:** Tekan `Ctrl + ,` (atau klik ikon menu kiri atas -> `Edit` -> `Preferences` / `Preferensi` -> `Interface Language` / `Bahasa Antarmuka`) untuk mengganti bahasa tampilan antara `English` dan `Bahasa Indonesia`, atau minta AI menjalankan perintah `pref.language` dengan `{"language": "en"}` atau `{"language": "id"}`.
 
 ### Langkah 2: Hubungkan Kanvas Anda (Pilih Mode A atau Mode B)
 
 #### Mode A: Koneksi Lokal Otomatis Tanpa Klik (Default)
 - Cukup buka file `.figcraft` (atau buat tab baru) di FigCraft Desktop lalu kirim instruksi di aplikasi AI Anda.
-- `figcraft-mcp` otomatis terhubung ke dokumen aktif dan mengeksekusi setiap `frame`, `rectangle`, `text`, serta `vector icon` satu per satu (`~40ms/elemen`) lengkap dengan *highlight* seleksi secara langsung.
+- `figcraft-mcp` otomatis terhubung ke dokumen aktif dan mengeksekusi setiap `frame`, `rectangle`, `text`, serta `vector icon` satu per satu (`~85ms/elemen`) lengkap dengan *highlight* seleksi secara langsung.
 
 #### Mode B: Sesi Kolaborasi Langsung & Kursor Multiplayer AI (`Share -> Live Session`)
 - Ingin melihat kursor multiplayer ungu **`Antigravity AI`** bergerak secara *real-time* di atas kanvas saat AI menggambar komponen?
@@ -217,7 +216,7 @@ Selain meneruskan 22 tool bawaan `figcraft-cli` (`inspect_document`, `get_node`,
 | :--- | :--- | :--- |
 | `FIGCRAFT_PORT` | `7979` | Port kontrol TCP untuk terhubung ke aplikasi FigCraft Desktop yang sedang berjalan. |
 | `FIGCRAFT_STREAM_STEPS` | `1` | `1` mengeksekusi perintah `batch` satu per satu dengan kursor live; `0` mengeksekusi sekaligus. |
-| `FIGCRAFT_STREAM_DELAY_MS` | `40` | Jeda waktu antar elemen saat live streaming (`40ms` = 25 elemen/detik). |
+| `FIGCRAFT_STREAM_DELAY_MS` | `85` | Jeda waktu antar elemen saat live streaming (`85ms` = ~12 elemen/detik). |
 | `FIGCRAFT_DEFAULT_DOC` | *(kosong)* | Lokasi file `.figcraft` opsional untuk dibuka otomatis saat menjalankan FigCraft Desktop. |
 | `FIGCRAFT_CLI_PATH` | *(otomatis)* | Path khusus menuju file executable `figcraft-cli`. |
 | `FIGCRAFT_APP_PATH` | *(otomatis)* | Path khusus menuju aplikasi desktop `figcraft`. |

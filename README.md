@@ -22,7 +22,7 @@
 
 Give **Google Antigravity**, **Cursor**, **Claude Code**, **Claude Desktop**, **Windsurf**, and other AI-powered coding tools live, real-time control over your **FigCraft Desktop** canvas with this [Model Context Protocol](https://modelcontextprotocol.io/) server.
 
-Unlike static CLI bridges that dump layouts in a single frozen frame or generate noisy "AI slop" interfaces, **FigCraft-MCP** streams every element step-by-step with a live multiplayer cursor (`~40ms/element`) and enforces a strict **Anti-Slop UI** design system inspired by **Shadcn UI**, **Radix Primitives**, and **Apple HIG**.
+Unlike static CLI bridges that dump layouts in a single frozen frame or generate noisy "AI slop" interfaces, **FigCraft-MCP** streams every element step-by-step with a live multiplayer cursor (`~85ms/element`) and enforces a strict **Anti-Slop UI** design system inspired by **Shadcn UI**, **Radix Primitives**, and **Apple HIG**.
 
 [**See quickstart instructions ->**](#quickstart) · [**See step-by-step usage guide ->**](#how-to-use-with-figcraft-desktop)
 
@@ -31,7 +31,7 @@ Unlike static CLI bridges that dump layouts in a single frozen frame or generate
 ## Visual Showcase & Demo
 
 ### 1. Real-Time Multiplayer Cursor & Step-by-Step Live Streaming
-Every layer (`frame`, `rectangle`, `text`, `vector icon`) is created step-by-step at `40ms/element` with live multiplayer cursor tracking (`Antigravity AI`) and bounding-box selection highlights on your open FigCraft canvas:
+Every layer (`frame`, `rectangle`, `text`, `vector icon`) is created step-by-step at `85ms/element` with live multiplayer cursor tracking (`Antigravity AI`) and bounding-box selection highlights on your open FigCraft canvas:
 
 <p align="center">
   <img src="./assets/screenshots/05-live-cursor-streaming.jpg" alt="Live Cursor Streaming on Auth Screens in FigCraft" width="440" />
@@ -106,7 +106,7 @@ Then **fully quit and reopen your AI app**, open **FigCraft Desktop**, and ask y
       "env": {
         "FIGCRAFT_PORT": "7979",
         "FIGCRAFT_STREAM_STEPS": "1",
-        "FIGCRAFT_STREAM_DELAY_MS": "40"
+        "FIGCRAFT_STREAM_DELAY_MS": "85"
       }
     }
   }
@@ -124,7 +124,7 @@ Or run zero-install via **Node.js (`npx`)**:
       "env": {
         "FIGCRAFT_PORT": "7979",
         "FIGCRAFT_STREAM_STEPS": "1",
-        "FIGCRAFT_STREAM_DELAY_MS": "40"
+        "FIGCRAFT_STREAM_DELAY_MS": "85"
       }
     }
   }
@@ -142,7 +142,7 @@ Or run zero-install via **`uvx`**:
       "env": {
         "FIGCRAFT_PORT": "7979",
         "FIGCRAFT_STREAM_STEPS": "1",
-        "FIGCRAFT_STREAM_DELAY_MS": "40"
+        "FIGCRAFT_STREAM_DELAY_MS": "85"
       }
     }
   }
@@ -169,19 +169,18 @@ git clone https://github.com/zuna107/figcraft-mcp.git .agents/plugins/figcraft-m
 
 Follow these step-by-step instructions to design, inspect, audit, and prototype UI screens live in FigCraft Desktop:
 
-### Step 1: Launch FigCraft Desktop & Configure Preferences (Optional)
+### Step 1: Launch FigCraft Desktop
 1. You do **not** need to pass any special command-line flags manually. When your AI agent calls any `figcraft` MCP tool, `figcraft-mcp` checks TCP port `7979` and automatically launches the visible **FigCraft Desktop** window with `--control 7979` if it is not running yet.
 2. If you launch FigCraft Desktop yourself from a terminal or shortcut, include `--control 7979`:
    ```powershell
    "C:\Program Files\ArtCraft\FigCraft\figcraft.exe" --control 7979
    ```
-3. **Switching Interface Language:** Press `Ctrl + ,` (or click the top-left menu icon -> `Edit` -> `Preferences` -> `Interface Language`) to switch the FigCraft Desktop UI language (e.g., `English`), or ask your AI agent to run `pref.language` with `{"language": "en"}`.
 
 ### Step 2: Connect Your Canvas (Choose Mode A or Mode B)
 
 #### Mode A: Zero-Click Local Control (Default)
 - Simply open any `.figcraft` file (or start a new tab) in FigCraft Desktop and send a prompt in your AI IDE.
-- `figcraft-mcp` automatically locks onto your active document and streams every `frame`, `rectangle`, `text`, and `vector icon` step-by-step (`~40ms/element`) with live bounding-box selection highlights.
+- `figcraft-mcp` automatically locks onto your active document and streams every `frame`, `rectangle`, `text`, and `vector icon` step-by-step (`~85ms/element`) with live bounding-box selection highlights.
 
 #### Mode B: Live Collaboration Session & Multiplayer AI Cursor (`Share -> Live Session`)
 - Want to see the purple **`Antigravity AI`** multiplayer cursor move across your canvas in real time?
@@ -237,7 +236,7 @@ Every agent using `figcraft-mcp` is guided by the bundled [`anti-slop-ui`](./ski
 | :--- | :--- | :--- |
 | `FIGCRAFT_PORT` | `7979` | TCP control port used to attach to the live FigCraft Desktop instance. |
 | `FIGCRAFT_STREAM_STEPS` | `1` | `1` streams `batch` commands step-by-step with live cursor movement; `0` executes instantly. |
-| `FIGCRAFT_STREAM_DELAY_MS` | `40` | Delay in milliseconds between streamed elements (`40ms` = 25 elements/sec). |
+| `FIGCRAFT_STREAM_DELAY_MS` | `85` | Delay in milliseconds between streamed elements (`85ms` = ~12 elements/sec). |
 | `FIGCRAFT_DEFAULT_DOC` | *(empty)* | Optional `.figcraft` file path to auto-open when launching FigCraft Desktop. |
 | `FIGCRAFT_CLI_PATH` | *(auto)* | Custom path to `figcraft-cli` executable. |
 | `FIGCRAFT_APP_PATH` | *(auto)* | Custom path to `figcraft` desktop executable. |

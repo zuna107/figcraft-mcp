@@ -15,7 +15,7 @@ HOST = os.environ.get("FIGCRAFT_HOST", "127.0.0.1")
 PORT = int(os.environ.get("FIGCRAFT_PORT", "7979"))
 DEFAULT_DOC = os.environ.get("FIGCRAFT_DEFAULT_DOC", "")
 STREAM_STEPS = os.environ.get("FIGCRAFT_STREAM_STEPS", "1") not in ("0", "false", "False")
-STREAM_DELAY_MS = float(os.environ.get("FIGCRAFT_STREAM_DELAY_MS", "40"))
+STREAM_DELAY_MS = float(os.environ.get("FIGCRAFT_STREAM_DELAY_MS", "85"))
 
 
 def resolve_cli_path() -> str:

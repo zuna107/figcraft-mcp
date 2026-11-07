@@ -256,20 +256,27 @@ class FigCraftMCPServer:
                 return {"jsonrpc": "2.0", "id": req_id, "result": self._stream_batch({"commands": cmds, "label": f"Icon {targs['name']}"})}
 
             if tname == "create_prototype_link":
-                interaction = {
-                    "trigger": {"type": "click"},
-                    "action": {
-                        "type": "navigate",
-                        "destination": targs["targetFrameId"],
-                        "transition": {
-                            "type": targs.get("transition", "smartAnimate"),
-                            "direction": targs.get("direction", "left"),
-                            "duration": float(targs.get("durationMs", 240)) / 1000.0,
-                            "easing": "easeInOut",
+                transition = {"type": targs.get("transition", "smartAnimate")}
+                if targs.get("direction"):
+                    transition["direction"] = targs["direction"]
+                try:
+                    self._call_backend_tool("run_command", {"command": "proto.interaction.clear", "params": {"ids": [targs["sourceId"]]}})
+                except Exception:
+                    pass
+                res = self._call_backend_tool(
+                    "run_command",
+                    {
+                        "command": "proto.interaction.add",
+                        "params": {
+                            "id": targs["sourceId"],
+                            "trigger": {"type": "onClick"},
+                            "action": {"type": "navigate", "dest": targs["targetFrameId"]},
+                            "transition": transition,
+                            "durationMs": int(targs.get("durationMs", 240)),
+                            "easing": "easeOut",
                         },
                     },
-                }
-                res = self._call_backend_tool("run_command", {"command": "proto.interaction.add", "params": {"id": targs["sourceId"], "interaction": interaction}})
+                )
                 return {"jsonrpc": "2.0", "id": req_id, "result": res}
 
             if tname == "batch":

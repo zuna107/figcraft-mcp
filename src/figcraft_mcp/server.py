@@ -212,6 +212,11 @@ class FigCraftMCPServer:
                 i += 1
             if delay > 0:
                 time.sleep(delay)
+        try:
+            self._call_backend_tool("run_command", {"command": "collab.cursorChat", "params": {"text": ""}})
+            self._call_backend_tool("select", {"ids": []})
+        except Exception:
+            pass
         return {"content": [{"type": "text", "text": json.dumps(results)}]}
 
     def handle_request(self, req: dict):

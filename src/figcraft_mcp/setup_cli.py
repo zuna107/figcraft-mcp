@@ -42,8 +42,9 @@ def run_setup(repo_root: str = None) -> int:
         "args": [server_script],
         "env": {
             "FIGCRAFT_PORT": "7979",
+            "FIGCRAFT_AUTO_LAUNCH": "0",
             "FIGCRAFT_STREAM_STEPS": "1",
-            "FIGCRAFT_STREAM_DELAY_MS": "40",
+            "FIGCRAFT_STREAM_DELAY_MS": "85",
         },
     }
 

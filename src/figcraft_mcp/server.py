@@ -14,10 +14,12 @@ if __package__ in (None, ""):
     sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
     from figcraft_mcp.config import (
         DEFAULT_DOC,
+        HOST,
         PORT,
         STREAM_DELAY_MS,
         STREAM_STEPS,
         ensure_desktop_running,
+        is_port_open,
         resolve_cli_path,
     )
     from figcraft_mcp.icons import ICONS, icon_cmds
@@ -25,10 +27,12 @@ if __package__ in (None, ""):
 else:
     from .config import (
         DEFAULT_DOC,
+        HOST,
         PORT,
         STREAM_DELAY_MS,
         STREAM_STEPS,
         ensure_desktop_running,
+        is_port_open,
         resolve_cli_path,
     )
     from .icons import ICONS, icon_cmds
@@ -90,7 +94,8 @@ EXTRA_TOOLS = [
 
 class FigCraftMCPServer:
     def __init__(self):
-        attached = ensure_desktop_running(DEFAULT_DOC, PORT)
+        # Never spawn GUI window on IDE startup; only attach if port is already listening
+        attached = is_port_open(HOST, PORT)
         cli_args = [resolve_cli_path(), "mcp"]
         if attached:
             cli_args.extend(["--attach", str(PORT)])
@@ -291,7 +296,6 @@ class FigCraftMCPServer:
 
         if method == "initialize":
             res = self._rpc_backend(method, params)
-            self._detect_live_doc()
             res["id"] = req_id
             return res
 

@@ -6,8 +6,9 @@
         "args": [],
         "env": {
           "FIGCRAFT_PORT": "7979",
+          "FIGCRAFT_AUTO_LAUNCH": "0",
           "FIGCRAFT_STREAM_STEPS": "1",
-          "FIGCRAFT_STREAM_DELAY_MS": "40"
+          "FIGCRAFT_STREAM_DELAY_MS": "85"
         }
       }
     }
@@ -19,8 +20,9 @@
         "args": ["-y", "github:zuna107/figcraft-mcp"],
         "env": {
           "FIGCRAFT_PORT": "7979",
+          "FIGCRAFT_AUTO_LAUNCH": "0",
           "FIGCRAFT_STREAM_STEPS": "1",
-          "FIGCRAFT_STREAM_DELAY_MS": "40"
+          "FIGCRAFT_STREAM_DELAY_MS": "85"
         }
       }
     }
@@ -32,8 +34,9 @@
         "args": ["--from", "git+https://github.com/zuna107/figcraft-mcp", "figcraft-mcp"],
         "env": {
           "FIGCRAFT_PORT": "7979",
+          "FIGCRAFT_AUTO_LAUNCH": "0",
           "FIGCRAFT_STREAM_STEPS": "1",
-          "FIGCRAFT_STREAM_DELAY_MS": "40"
+          "FIGCRAFT_STREAM_DELAY_MS": "85"
         }
       }
     }

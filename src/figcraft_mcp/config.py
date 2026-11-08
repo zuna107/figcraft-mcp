@@ -14,6 +14,7 @@ import time
 HOST = os.environ.get("FIGCRAFT_HOST", "127.0.0.1")
 PORT = int(os.environ.get("FIGCRAFT_PORT", "7979"))
 DEFAULT_DOC = os.environ.get("FIGCRAFT_DEFAULT_DOC", "")
+AUTO_LAUNCH = os.environ.get("FIGCRAFT_AUTO_LAUNCH", "0") in ("1", "true", "True")
 STREAM_STEPS = os.environ.get("FIGCRAFT_STREAM_STEPS", "1") not in ("0", "false", "False")
 STREAM_DELAY_MS = float(os.environ.get("FIGCRAFT_STREAM_DELAY_MS", "85"))
 
@@ -75,10 +76,13 @@ def is_port_open(host: str = HOST, port: int = PORT, timeout: float = 0.12) -> b
             return False
 
 
-def ensure_desktop_running(doc_path: str = DEFAULT_DOC, port: int = PORT) -> bool:
-    """Ensure the visible FigCraft Desktop GUI is running with `--control <port>`."""
+def ensure_desktop_running(doc_path: str = DEFAULT_DOC, port: int = PORT, force_launch: bool = False) -> bool:
+    """Check if FigCraft Desktop control server is listening; only launch GUI if force_launch or FIGCRAFT_AUTO_LAUNCH=1."""
     if is_port_open(HOST, port):
         return True
+
+    if not (force_launch or AUTO_LAUNCH):
+        return False
 
     app_bin = resolve_app_path()
     if not os.path.exists(app_bin) and not shutil.which(app_bin):

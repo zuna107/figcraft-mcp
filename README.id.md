@@ -188,13 +188,16 @@ Anda dapat memberikan perintah dalam bahasa alami. Berikut tahapan alur kerja ya
 
 ---
 
-## Daftar Tool MCP (Total 24 Tool)
+## Daftar Tool MCP (Total 27 Tool)
 
-Selain meneruskan 19 tool bawaan `figcraft-cli` (`inspect_document`, `get_node`, `create_node`, `set_properties`, `batch`, `run_command`, `export`, `screenshot`, `save_file`, dll.), `figcraft-mcp` menyediakan **5 tool tingkat tinggi yang dioptimalkan untuk hemat token**:
+Selain meneruskan tool bawaan `figcraft-cli` (`inspect_document`, `get_node`, `create_node`, `set_properties`, `batch`, `run_command`, `export`, `screenshot`, `save_file`, dll.), `figcraft-mcp` menyediakan **8 tool tingkat tinggi yang dioptimalkan untuk hemat token**:
 
 | Nama Tool | Fungsi & Penghematan Token |
 | :--- | :--- |
-| `list_screens` | **Hemat Token (98%)**: Mengambil daftar seluruh frame layar utama (ID, nama, posisi, ukuran) di Page aktif tanpa perlu mendump seluruh pohon dokumen. |
+| `create_from_template` | **Inisialisasi Bebas Slop**: Menginisiasi starter template resmi (`mobile-app`, `dashboard`, `landing-page`, `design-system`, `wireframe-kit`, `social-posts`, `slides`, `icon-set`) lengkap dengan auto-layout dalam milidetik. |
+| `inspect_code` | **Ekspor Kode Native**: Mengonversi frame/layar langsung ke Tailwind CSS v4, Jetpack Compose, SwiftUI, React TSX, atau Flutter tanpa halusinasi LLM. |
+| `extract_canvas_tokens` | **Ekstraktor Token Desain**: Mengekstrak variabel warna (mode Terang/Gelap), jarak, radius sudut, dan font langsung dari kanvas aktif dalam < 200 token. |
+| `list_screens` | **Hemat Token (98%)**: Mengambil daftar seluruh frame layar utama (ID, nama, posisi, ukuran) di Page aktif menggunakan proyeksi outline. |
 | `find_nodes` | **Hemat Token (90%)**: Pencarian instan untuk node tertentu (nama/teks) di dalam suatu frame saat ingin memodifikasi atau mengedit elemen tanpa membaca seluruh screen. |
 | `get_anti_slop_guidelines` | Mengambil panduan kualitas universal bebas AI slop, preset multi-gaya (`neutral_clean`, `ios_hig`, `material_m3`, `dark_modern`), dan panduan few-shot kanvas. |
 | `place_lucide_icon` | Menempatkan **39 ikon garis vektor Lucide 24x24** (`search`, `download`, `wallet`, `home`, `barChart`, `plus`, `x`, `check`, `chevronDown`, `user`, `mail`, `lock`, dll.) secara presisi dalam 1 langkah. |

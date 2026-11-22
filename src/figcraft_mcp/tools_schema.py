@@ -8,7 +8,7 @@ from .icons import ICONS
 EXTRA_TOOLS = [
     {
         "name": "list_screens",
-        "description": "Fast and token-efficient overview of all top-level screen frames on the page (IDs, names, positions, sizes). Use this instead of inspect_document to save 95%+ tokens.",
+        "description": "Fast and token-efficient overview of all top-level screen frames on the page (IDs, names, positions, sizes). Uses outline projection to save 90%+ tokens.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -31,6 +31,66 @@ EXTRA_TOOLS = [
                 },
             },
             "required": ["parent", "query"],
+        },
+    },
+    {
+        "name": "create_from_template",
+        "description": "Instantiate an official FigCraft starter template (mobile-app, dashboard, landing-page, design-system, wireframe-kit, social-posts, slides, icon-set). Generates a complete, beautiful, production-ready screen structure with auto-layout and 0 AI-slop in milliseconds.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "template": {
+                    "type": "string",
+                    "enum": [
+                        "mobile-app",
+                        "landing-page",
+                        "dashboard",
+                        "design-system",
+                        "wireframe-kit",
+                        "social-posts",
+                        "slides",
+                        "icon-set",
+                    ],
+                    "description": "Starter template identifier to instantiate",
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Optional custom name for the created document",
+                },
+            },
+            "required": ["template"],
+        },
+    },
+    {
+        "name": "inspect_code",
+        "description": "Generate production-ready code directly from any canvas layer/frame into Tailwind CSS v4, Jetpack Compose, SwiftUI, React TSX, Flutter, or HTML. Extremely fast native code generation without LLM hallucination.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "nodeId": {
+                    "type": "integer",
+                    "description": "Layer/Frame ID to inspect (omit to use current selection)",
+                },
+                "language": {
+                    "type": "string",
+                    "enum": ["tailwind", "compose", "swiftui", "react", "flutter", "html", "css", "vue", "leptos"],
+                    "default": "tailwind",
+                    "description": "Target framework or language",
+                },
+            },
+        },
+    },
+    {
+        "name": "extract_canvas_tokens",
+        "description": "Extract design tokens, color variables, typography styles, and component references directly from the active canvas. Compact, few-shot ready format for perfect design consistency.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "collection": {
+                    "type": "string",
+                    "description": "Optional collection filter name",
+                },
+            },
         },
     },
     {

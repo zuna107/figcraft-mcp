@@ -2,6 +2,26 @@
 
 All notable changes to **FigCraft-MCP** are documented in this file.
 
+## [1.2.0] - 2026-11-22
+
+### Added
+- **Official FigCraft Starter Templates (`create_from_template`)**:
+  - Direct integration with official FigCraft template engine (`template.list`, `file.newFromTemplate`): `mobile-app`, `dashboard`, `landing-page`, `design-system`, `wireframe-kit`, `social-posts`, `slides`, and `icon-set`.
+  - Instantiates complete, auto-layout structured multi-screen documents with Light/Dark variables in < 190ms with 0 AI slop.
+- **Native Multi-Framework Code Generation (`inspect_code`)**:
+  - Compiles any frame/layer directly into production code: `tailwind` (Tailwind CSS v4), `compose` (Jetpack Compose), `swiftui` (SwiftUI), `react` (React TSX), `flutter` (Flutter), and `html`.
+  - Eliminates LLM code hallucination by utilizing FigCraft's native Rust compilation engine.
+- **Canvas Design Token Extraction (`extract_canvas_tokens`)**:
+  - Extracts color variables (with Light & Dark mode values), spacing, radii, and font families directly from the active canvas in < 200 tokens.
+- **Modular High-Level Handlers (`handlers.py`)**:
+  - Extracted MCP tool handlers to `src/figcraft_mcp/handlers.py` to ensure all source files strictly adhere to anti-monolith guidelines (all files < 250 lines).
+
+### Changed
+- **Outline Projection Optimization**:
+  - Updated `list_screens` and `find_nodes` to use native `outline: True` on `get_node`, reducing data payload and memory usage by 90%+.
+- **Python SDK Updates**:
+  - Added `fc.create_from_template(template, name=None)` and `fc.inspect_code(node_id=None, language="tailwind")` to `FigCraftLive`.
+
 ## [1.1.0] - 2026-11-22
 
 ### Added

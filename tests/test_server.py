@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import unittest
@@ -15,6 +16,7 @@ from figcraft_mcp import (
     icon_cmds,
     resolve_cli_path,
 )
+from figcraft_mcp.handlers import handle_get_anti_slop_guidelines, rgba_to_hex
 from figcraft_mcp.server import EXTRA_TOOLS, FigCraftMCPServer
 
 
@@ -43,24 +45,37 @@ class TestFigCraftMCPPackage(unittest.TestCase):
         names = [t["name"] for t in EXTRA_TOOLS]
         self.assertIn("list_screens", names)
         self.assertIn("find_nodes", names)
+        self.assertIn("create_from_template", names)
+        self.assertIn("inspect_code", names)
+        self.assertIn("extract_canvas_tokens", names)
         self.assertIn("place_lucide_icon", names)
         self.assertIn("create_prototype_link", names)
         self.assertIn("get_anti_slop_guidelines", names)
 
+    def test_rgba_to_hex(self):
+        self.assertEqual(rgba_to_hex({"r": 1.0, "g": 1.0, "b": 1.0, "a": 1.0}), "#FFFFFF")
+        self.assertEqual(rgba_to_hex({"r": 0.0, "g": 0.0, "b": 0.0, "a": 1.0}), "#000000")
+        self.assertEqual(rgba_to_hex({"r": 0.5, "g": 0.5, "b": 0.5, "a": 0.5}), "rgba(128, 128, 128, 0.5)")
+
+    def test_get_anti_slop_guidelines_handler(self):
+        res = handle_get_anti_slop_guidelines({"style": "ios_hig"})
+        self.assertIn("content", res)
+        data = json.loads(res["content"][0]["text"])
+        self.assertEqual(data["active_preset"], "ios_hig")
+        self.assertIn("tokens", data)
+        self.assertIn("heuristics", data)
+
     def test_batch_formatter_token_optimization(self):
-        # Test compact summary formatting to verify token reduction
         server = FigCraftMCPServer.__new__(FigCraftMCPServer)
         raw_results = [{"id": 101, "name": "A", "type": "frame"}, {"id": 102, "name": "B", "type": "text"}]
         summary_res = server._format_batch_result(raw_results, verbose=False)
         self.assertIn("content", summary_res)
-        import json
         data = json.loads(summary_res["content"][0]["text"])
         self.assertEqual(data["status"], "success")
         self.assertEqual(data["created_count"], 2)
         self.assertEqual(data["root_id"], 101)
         self.assertEqual(data["created_ids"], [101, 102])
 
-        # Test verbose flag preserves raw output
         verbose_res = server._format_batch_result(raw_results, verbose=True)
         raw_data = json.loads(verbose_res["content"][0]["text"])
         self.assertEqual(raw_data, raw_results)
@@ -72,4 +87,3 @@ class TestFigCraftMCPPackage(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

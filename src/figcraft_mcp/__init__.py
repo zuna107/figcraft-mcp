@@ -2,7 +2,7 @@
 FigCraft-MCP: Universal Live-Streaming MCP Server & Anti-Slop UI Design Engine for FigCraft Desktop.
 """
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 from .config import (
     resolve_cli_path,

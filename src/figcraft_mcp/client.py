@@ -44,7 +44,7 @@ class FigCraftLive:
             {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {},
-                "clientInfo": {"name": "figcraft-mcp-sdk", "version": "1.1.0"},
+                "clientInfo": {"name": "figcraft-mcp-sdk", "version": "1.2.0"},
             },
         )
         self.lock_document(doc_path)
@@ -174,7 +174,7 @@ class FigCraftLive:
         return results
 
     def list_screens(self, page_id: int = 1):
-        node = self.tool("get_node", {"id": page_id, "depth": 1})
+        node = self.tool("get_node", {"id": page_id, "depth": 1, "outline": True})
         if not isinstance(node, dict):
             return []
         screens = []
@@ -191,7 +191,7 @@ class FigCraftLive:
         return screens
 
     def find_nodes(self, parent_id: int, query: str, node_type: str = None):
-        root = self.tool("get_node", {"id": parent_id, "depth": 10})
+        root = self.tool("get_node", {"id": parent_id, "depth": 10, "outline": True})
         matches = []
         q = str(query).lower()
 
@@ -203,7 +203,7 @@ class FigCraftLive:
             t = curr.get("type", "")
             matched = False
             if q in n.lower() or q in chars.lower():
-                if not node_type or t == node_type:
+                if not node_type or t.lower() == node_type.lower():
                     matched = True
             if matched and curr.get("id") != parent_id:
                 item = {
@@ -223,6 +223,22 @@ class FigCraftLive:
 
         walk(root)
         return matches
+
+    def create_from_template(self, template: str, name: str = None):
+        """Instantiate an official FigCraft starter template (instant, 0 AI-slop)."""
+        args = {"template": template}
+        if name:
+            args["name"] = name
+        res = self.tool("run_command", {"command": "file.newFromTemplate", "params": args})
+        self.lock_document()
+        return res
+
+    def inspect_code(self, node_id: int = None, language: str = "tailwind"):
+        """Natively compile a layer into Tailwind, Compose, SwiftUI, React, or Flutter."""
+        params = {"language": language}
+        if node_id is not None:
+            params["id"] = node_id
+        return self.tool("run_command", {"command": "inspect.code", "params": params})
 
     def cursor(self, x: float, y: float, chat: str = None):
         cmds = [{"command": "collab.cursor", "params": {"x": float(x), "y": float(y)}}]

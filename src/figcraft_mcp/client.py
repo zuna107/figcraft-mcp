@@ -44,7 +44,7 @@ class FigCraftLive:
             {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {},
-                "clientInfo": {"name": "figcraft-mcp-sdk", "version": "1.0.0"},
+                "clientInfo": {"name": "figcraft-mcp-sdk", "version": "1.1.0"},
             },
         )
         self.lock_document(doc_path)
@@ -172,6 +172,57 @@ class FigCraftLive:
             if self.step_delay > 0:
                 time.sleep(self.step_delay)
         return results
+
+    def list_screens(self, page_id: int = 1):
+        node = self.tool("get_node", {"id": page_id, "depth": 1})
+        if not isinstance(node, dict):
+            return []
+        screens = []
+        for c in node.get("children", []):
+            screens.append({
+                "id": c.get("id"),
+                "name": c.get("name"),
+                "type": c.get("type"),
+                "x": c.get("x", 0.0),
+                "y": c.get("y", 0.0),
+                "width": c.get("width", 0.0),
+                "height": c.get("height", 0.0),
+            })
+        return screens
+
+    def find_nodes(self, parent_id: int, query: str, node_type: str = None):
+        root = self.tool("get_node", {"id": parent_id, "depth": 10})
+        matches = []
+        q = str(query).lower()
+
+        def walk(curr):
+            if not isinstance(curr, dict):
+                return
+            n = curr.get("name", "")
+            chars = curr.get("characters", "")
+            t = curr.get("type", "")
+            matched = False
+            if q in n.lower() or q in chars.lower():
+                if not node_type or t == node_type:
+                    matched = True
+            if matched and curr.get("id") != parent_id:
+                item = {
+                    "id": curr.get("id"),
+                    "name": n,
+                    "type": t,
+                    "x": curr.get("x"),
+                    "y": curr.get("y"),
+                    "width": curr.get("width"),
+                    "height": curr.get("height"),
+                }
+                if chars:
+                    item["text"] = chars
+                matches.append(item)
+            for ch in curr.get("children", []):
+                walk(ch)
+
+        walk(root)
+        return matches
 
     def cursor(self, x: float, y: float, chat: str = None):
         cmds = [{"command": "collab.cursor", "params": {"x": float(x), "y": float(y)}}]

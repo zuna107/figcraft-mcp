@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
-Anti-Slop UI Design System Tokens & Component Recipes for FigCraft.
-Enforces neutral, restrained, human-designed interfaces inspired by Shadcn UI, Radix Primitives, and Apple HIG.
+Anti-Slop UI Design System Tokens, Multi-Style Presets & Component Recipes for FigCraft.
+Enforces high aesthetic quality, clean typography, purposeful hierarchy, and prevents AI slop clichés
+across multiple design paradigms (Neutral/Shadcn, iOS HIG, Material 3, and Dark Modern).
 """
 
+# Default neutral tokens (backward compatible)
 ANTI_SLOP_TOKENS = {
     "colors": {
         "surface_primary": "#FFFFFF",
@@ -44,14 +46,116 @@ ANTI_SLOP_TOKENS = {
     },
 }
 
+UNIVERSAL_HEURISTICS = [
+    {
+        "id": "no_ai_buzzwords",
+        "title": "Banish AI Fluff & Buzzwords",
+        "rule": "NEVER use AI clichés like 'Magic Scanning...', 'AI will auto-fill everything', '✨ AI Matched', or generic fluff subtitles like 'Manage your finances with confidence today'. Use clear, functional action verbs ('Memindai Struk...', 'Review Transaksi').",
+    },
+    {
+        "id": "vector_icons_over_emojis",
+        "title": "Strict Vector Icons Only",
+        "rule": "NEVER place Unicode emojis (🔥, ✨, 💰, 📈, 🍔, 🚗) in text layers. Always use vector icons (via `place_lucide_icon` or `icon_cmds`).",
+    },
+    {
+        "id": "spacing_grid_discipline",
+        "title": "4pt / 8pt Spacing Grid",
+        "rule": "All margins, paddings, and element dimensions must follow a 4pt/8pt grid (4, 8, 12, 16, 20, 24, 32px). Never use arbitrary random values (e.g. 13px, 17px, 23px).",
+    },
+    {
+        "id": "purposeful_interaction_states",
+        "title": "Real Functional States",
+        "rule": "Interactive components must reflect real UX states: dropdowns must have max-height and scrollbars for overflow; search bars inside pickers; clear selected row indicators; active tab indicator in segmented switchers.",
+    },
+    {
+        "id": "single_primary_cta",
+        "title": "Single Primary Action",
+        "rule": "Never duplicate primary actions in multiple locations (e.g., adding '+ Add Wallet' both in header and bottom). Keep one primary CTA per viewport.",
+    },
+    {
+        "id": "locked_parent_backdrops",
+        "title": "Layered Modal Backdrops",
+        "rule": "Never render popups or bottom sheets over an empty dark void. Duplicate the parent screen at (0, 0) with locked=True, cover with a 45% opacity #0F172A scrim, and place the modal on top.",
+    },
+]
+
 BANNED_PATTERNS = [
     "NEVER use Unicode emojis (🔥, ✨, 💰, 📈, 🍔) inside text layers; always use `place_lucide_icon` or `icon_cmds`.",
-    "NEVER add gratuitous 'AI Insight', 'AI Matched', 'Hasil Scan AI', or sparkle badges on forms, headers, or summary cards.",
+    "NEVER add gratuitous 'AI Insight', 'AI Matched', 'Hasil Scan AI', 'Magic', or sparkle badges on forms, headers, or summary cards.",
+    "NEVER place arbitrary pastel/neon linear gradients on screen canvas backgrounds without intentional theme justification.",
     "NEVER color-code dropdown triggers or form inputs with loud orange/purple/neon backgrounds and borders (#FFF7ED / #F3F0FF).",
-    "NEVER add colored arrow icons inside segmented tab switchers (keep tabs clean text-only on #F1F2F6 track + #FFFFFF active pill).",
+    "NEVER add colored arrow icons inside segmented tab switchers (keep tabs clean text-only with active pill highlight).",
     "NEVER duplicate primary action buttons (e.g., having '+ Add Wallet' in both the top header and the bottom of the screen).",
     "NEVER render popups/bottom sheets on an empty dark rectangle; always duplicate the underlying parent screen as a locked backdrop behind a 45% opacity #0F172A scrim.",
 ]
+
+STYLE_PRESETS = {
+    "neutral_clean": {
+        "name": "Neutral Clean (Shadcn / Radix inspired)",
+        "surface_canvas": "#F8F9FA",
+        "surface_card": "#FFFFFF",
+        "surface_input": "#F8FAFC",
+        "border": "#E2E8F0",
+        "text_primary": "#1E1E2D",
+        "text_muted": "#8F92A1",
+        "brand_primary": "#6C5CE7",
+        "card_radius": 16,
+        "button_radius": 12,
+        "font_family": "Plus Jakarta Sans",
+    },
+    "ios_hig": {
+        "name": "Apple iOS Human Interface Guidelines",
+        "surface_canvas": "#F2F2F7",
+        "surface_card": "#FFFFFF",
+        "surface_input": "#FFFFFF",
+        "border": "#E5E5EA",
+        "text_primary": "#000000",
+        "text_muted": "#8E8E93",
+        "brand_primary": "#007AFF",
+        "card_radius": 14,
+        "button_radius": 12,
+        "font_family": "Inter",
+    },
+    "material_m3": {
+        "name": "Google Material 3",
+        "surface_canvas": "#FEF7FF",
+        "surface_card": "#F7F2FA",
+        "surface_input": "#ECE6F0",
+        "border": "#CAC4D0",
+        "text_primary": "#1D1B20",
+        "text_muted": "#49454F",
+        "brand_primary": "#6750A4",
+        "card_radius": 16,
+        "button_radius": 20,
+        "font_family": "Roboto",
+    },
+    "dark_modern": {
+        "name": "Modern Obsidian Dark",
+        "surface_canvas": "#09090B",
+        "surface_card": "#18181B",
+        "surface_input": "#27272A",
+        "border": "#27272A",
+        "text_primary": "#FAFAFA",
+        "text_muted": "#A1A1AA",
+        "brand_primary": "#6366F1",
+        "card_radius": 16,
+        "button_radius": 12,
+        "font_family": "Plus Jakarta Sans",
+    },
+}
+
+FEW_SHOT_GUIDANCE = """
+FEW-SHOT CANVAS STYLE LEARNING:
+When working on an existing FigCraft project with prior screens:
+1. Call `list_screens` first to discover existing screens.
+2. Identify a clean, high-quality reference screen (e.g. Screen 4 - Review Transaction, Screen 6 - Manage Wallets).
+3. Extract and match its design tokens:
+   - Match canvas fill and card surface colors.
+   - Match corner radii on cards, inputs, and buttons.
+   - Match typography font family and scale.
+4. Avoid mimicking slop screens (e.g., screens with gratuitous gradients, motivational quote greetings, or colorful emoji badges).
+5. Only if starting a brand new blank document, ask the user or default to `neutral_clean`.
+"""
 
 COMPONENT_RECIPES = {
     "segmented_switcher": {
@@ -74,4 +178,3 @@ COMPONENT_RECIPES = {
         "sheet": {"fill": "#FFFFFF", "cornerRadius": [28, 28, 0, 0]},
     },
 }
-

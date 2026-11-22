@@ -2,7 +2,7 @@
 FigCraft-MCP: Universal Live-Streaming MCP Server & Anti-Slop UI Design Engine for FigCraft Desktop.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 from .config import (
     resolve_cli_path,
@@ -13,7 +13,14 @@ from .config import (
     HOST,
 )
 from .icons import ICONS, ICON_BBOX, icon_cmds
-from .tokens import ANTI_SLOP_TOKENS, BANNED_PATTERNS, COMPONENT_RECIPES
+from .tokens import (
+    ANTI_SLOP_TOKENS,
+    BANNED_PATTERNS,
+    COMPONENT_RECIPES,
+    UNIVERSAL_HEURISTICS,
+    STYLE_PRESETS,
+    FEW_SHOT_GUIDANCE,
+)
 from .client import FigCraftLive
 
 __all__ = [
@@ -30,6 +37,9 @@ __all__ = [
     "ANTI_SLOP_TOKENS",
     "BANNED_PATTERNS",
     "COMPONENT_RECIPES",
+    "UNIVERSAL_HEURISTICS",
+    "STYLE_PRESETS",
+    "FEW_SHOT_GUIDANCE",
     "FigCraftLive",
 ]
 

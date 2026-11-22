@@ -10,10 +10,12 @@ from figcraft_mcp import (
     COMPONENT_RECIPES,
     ICON_BBOX,
     ICONS,
+    STYLE_PRESETS,
+    UNIVERSAL_HEURISTICS,
     icon_cmds,
     resolve_cli_path,
 )
-from figcraft_mcp.server import EXTRA_TOOLS
+from figcraft_mcp.server import EXTRA_TOOLS, FigCraftMCPServer
 
 
 class TestFigCraftMCPPackage(unittest.TestCase):
@@ -31,12 +33,37 @@ class TestFigCraftMCPPackage(unittest.TestCase):
         self.assertEqual(ANTI_SLOP_TOKENS["colors"]["surface_primary"], "#FFFFFF")
         self.assertGreaterEqual(len(BANNED_PATTERNS), 5)
         self.assertIn("searchable_scrollable_dropdown", COMPONENT_RECIPES)
+        self.assertGreaterEqual(len(UNIVERSAL_HEURISTICS), 4)
+        self.assertIn("neutral_clean", STYLE_PRESETS)
+        self.assertIn("ios_hig", STYLE_PRESETS)
+        self.assertIn("material_m3", STYLE_PRESETS)
+        self.assertIn("dark_modern", STYLE_PRESETS)
 
     def test_extra_mcp_tools_schema(self):
         names = [t["name"] for t in EXTRA_TOOLS]
+        self.assertIn("list_screens", names)
+        self.assertIn("find_nodes", names)
         self.assertIn("place_lucide_icon", names)
         self.assertIn("create_prototype_link", names)
         self.assertIn("get_anti_slop_guidelines", names)
+
+    def test_batch_formatter_token_optimization(self):
+        # Test compact summary formatting to verify token reduction
+        server = FigCraftMCPServer.__new__(FigCraftMCPServer)
+        raw_results = [{"id": 101, "name": "A", "type": "frame"}, {"id": 102, "name": "B", "type": "text"}]
+        summary_res = server._format_batch_result(raw_results, verbose=False)
+        self.assertIn("content", summary_res)
+        import json
+        data = json.loads(summary_res["content"][0]["text"])
+        self.assertEqual(data["status"], "success")
+        self.assertEqual(data["created_count"], 2)
+        self.assertEqual(data["root_id"], 101)
+        self.assertEqual(data["created_ids"], [101, 102])
+
+        # Test verbose flag preserves raw output
+        verbose_res = server._format_batch_result(raw_results, verbose=True)
+        raw_data = json.loads(verbose_res["content"][0]["text"])
+        self.assertEqual(raw_data, raw_results)
 
     def test_cli_path_resolution(self):
         cli = resolve_cli_path()

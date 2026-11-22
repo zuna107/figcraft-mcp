@@ -23,7 +23,16 @@ if __package__ in (None, ""):
         resolve_cli_path,
     )
     from figcraft_mcp.icons import ICONS, icon_cmds
-    from figcraft_mcp.tokens import ANTI_SLOP_TOKENS, BANNED_PATTERNS, COMPONENT_RECIPES
+    from figcraft_mcp.tokens import (
+        ANTI_SLOP_TOKENS,
+        BANNED_PATTERNS,
+        COMPONENT_RECIPES,
+        FEW_SHOT_GUIDANCE,
+        STYLE_PRESETS,
+        UNIVERSAL_HEURISTICS,
+    )
+    from figcraft_mcp.batch_streamer import format_batch_result, stream_batch_commands
+    from figcraft_mcp.tools_schema import EXTRA_TOOLS
 else:
     from .config import (
         DEFAULT_DOC,
@@ -36,60 +45,16 @@ else:
         resolve_cli_path,
     )
     from .icons import ICONS, icon_cmds
-    from .tokens import ANTI_SLOP_TOKENS, BANNED_PATTERNS, COMPONENT_RECIPES
-
-EXTRA_TOOLS = [
-    {
-        "name": "place_lucide_icon",
-        "description": "Place a crisp 24x24 Lucide vector icon (never use Unicode emojis) inside a parent frame with automatic scaling and live cursor animation.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "parent": {"type": "integer", "description": "Parent frame/node ID"},
-                "name": {"type": "string", "description": "Layer name for the icon"},
-                "icon": {
-                    "type": "string",
-                    "enum": sorted(ICONS.keys()),
-                    "description": "Lucide icon key",
-                },
-                "x": {"type": "number", "description": "X coordinate inside parent"},
-                "y": {"type": "number", "description": "Y coordinate inside parent"},
-                "size": {"type": "number", "default": 16, "description": "Target icon size in px"},
-                "color": {"type": "string", "default": "#1E1E2D", "description": "Stroke hex color"},
-                "strokeWeight": {"type": "number", "default": 1.8, "description": "Stroke width"},
-            },
-            "required": ["parent", "name", "icon", "x", "y"],
-        },
-    },
-    {
-        "name": "create_prototype_link",
-        "description": "Connect an interactive prototype flow link from a trigger node to a destination frame.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "sourceId": {"type": "integer", "description": "Clickable trigger layer ID"},
-                "targetFrameId": {"type": "integer", "description": "Destination screen frame ID"},
-                "transition": {
-                    "type": "string",
-                    "enum": ["smartAnimate", "dissolve", "push", "slideIn", "moveOut", "instant"],
-                    "default": "smartAnimate",
-                },
-                "direction": {
-                    "type": "string",
-                    "enum": ["left", "right", "top", "bottom"],
-                    "default": "left",
-                },
-                "durationMs": {"type": "number", "default": 240},
-            },
-            "required": ["sourceId", "targetFrameId"],
-        },
-    },
-    {
-        "name": "get_anti_slop_guidelines",
-        "description": "Retrieve the Anti-Slop UI Design Tokens, neutral color palette, typography scale, banned AI clichés, and component recipes before creating or auditing screens.",
-        "inputSchema": {"type": "object", "properties": {}},
-    },
-]
+    from .tokens import (
+        ANTI_SLOP_TOKENS,
+        BANNED_PATTERNS,
+        COMPONENT_RECIPES,
+        FEW_SHOT_GUIDANCE,
+        STYLE_PRESETS,
+        UNIVERSAL_HEURISTICS,
+    )
+    from .batch_streamer import format_batch_result, stream_batch_commands
+    from .tools_schema import EXTRA_TOOLS
 
 
 class FigCraftMCPServer:
@@ -210,84 +175,11 @@ class FigCraftMCPServer:
         except Exception:
             pass
 
-    def _resolve_refs(self, obj, refs: dict):
-        if isinstance(obj, dict):
-            if "$ref" in obj and len(obj) == 1:
-                return refs.get(obj["$ref"], obj)
-            return {k: self._resolve_refs(v, refs) for k, v in obj.items()}
-        if isinstance(obj, list):
-            return [self._resolve_refs(v, refs) for v in obj]
-        return obj
+    def _format_batch_result(self, raw_results, verbose: bool = False):
+        return format_batch_result(raw_results, verbose=verbose)
 
     def _stream_batch(self, args: dict):
-        commands = args.get("commands", [])
-        if not STREAM_STEPS or len(commands) <= 2 or args.get("stream") is False:
-            return self._call_backend_tool("batch", args)
-
-        refs = {}
-        results = []
-        i, n = 0, len(commands)
-        delay = STREAM_DELAY_MS / 1000.0
-        while i < n:
-            cmd = self._resolve_refs(commands[i], refs)
-            c_name = cmd.get("command")
-            params = cmd.get("params", {})
-            as_key = cmd.get("as")
-            is_vec_pair = (
-                c_name == "node.create"
-                and params.get("type") == "vector"
-                and as_key
-                and i + 1 < n
-                and commands[i + 1].get("command") == "node.set"
-            )
-            micro = []
-            if c_name in ("node.create", "node.set"):
-                if c_name == "node.create" and params.get("type") == "text":
-                    if params.get("width") == 100:
-                        params.pop("width", None)
-                    if params.get("height") == 100:
-                        params.pop("height", None)
-                pid = params.get("parent")
-                px, py = self.node_origins.get(pid, (0.0, 0.0))
-                cx = px + float(params.get("x", 0.0)) + float(params.get("width", 30.0)) * 0.5
-                cy = py + float(params.get("y", 0.0)) + float(params.get("height", 20.0)) * 0.5
-                if cx != 0.0 or cy != 0.0:
-                    micro.append({"command": "collab.cursor", "params": {"x": cx, "y": cy}})
-                    self._peer_cursor(cx, cy)
-                if c_name == "node.create":
-                    params["select"] = True
-
-            if is_vec_pair:
-                micro.extend([cmd, commands[i + 1]])
-                r = self._call_backend_tool("batch", {"commands": micro, "label": params.get("name", "Icon")})
-                step_list = json.loads(r.get("content", [{}])[0].get("text", "[]"))
-                if isinstance(step_list, list) and len(step_list) >= 2:
-                    c_obj = step_list[-2]
-                    refs[as_key] = c_obj["id"] if isinstance(c_obj, dict) else c_obj
-                    results.extend(step_list[-2:])
-                i += 2
-            else:
-                micro.append(cmd)
-                r = self._call_backend_tool("batch", {"commands": micro, "label": params.get("name", c_name)})
-                step_list = json.loads(r.get("content", [{}])[0].get("text", "[]"))
-                if isinstance(step_list, list) and step_list:
-                    main_res = step_list[-1]
-                    if c_name == "node.create":
-                        nid = main_res["id"] if isinstance(main_res, dict) else main_res
-                        px, py = self.node_origins.get(params.get("parent"), (0.0, 0.0))
-                        self.node_origins[nid] = (px + float(params.get("x", 0.0)), py + float(params.get("y", 0.0)))
-                        if as_key:
-                            refs[as_key] = nid
-                    results.append(main_res)
-                i += 1
-            if delay > 0:
-                time.sleep(delay)
-        try:
-            self._call_backend_tool("run_command", {"command": "collab.cursorChat", "params": {"text": ""}})
-            self._call_backend_tool("select", {"ids": []})
-        except Exception:
-            pass
-        return {"content": [{"type": "text", "text": json.dumps(results)}]}
+        return stream_batch_commands(self, args)
 
     def handle_request(self, req: dict):
         method = req.get("method")
@@ -312,8 +204,81 @@ class FigCraftMCPServer:
             if self.live_doc_id is None:
                 self._detect_live_doc()
 
+            if tname == "list_screens":
+                page_id = targs.get("page", 1)
+                r = self._call_backend_tool("get_node", {"id": page_id, "depth": 1})
+                txt = r.get("content", [{}])[0].get("text", "{}")
+                screens = []
+                try:
+                    node = json.loads(txt)
+                    children = node.get("children", [])
+                    for c in children:
+                        screens.append({
+                            "id": c.get("id"),
+                            "name": c.get("name"),
+                            "type": c.get("type"),
+                            "x": c.get("x", 0.0),
+                            "y": c.get("y", 0.0),
+                            "width": c.get("width", 0.0),
+                            "height": c.get("height", 0.0),
+                        })
+                except Exception as exc:
+                    return {"jsonrpc": "2.0", "id": req_id, "result": {"content": [{"type": "text", "text": f"Error parsing page nodes: {exc}"}], "isError": True}}
+                return {"jsonrpc": "2.0", "id": req_id, "result": {"content": [{"type": "text", "text": json.dumps({"page": page_id, "count": len(screens), "screens": screens}, indent=2)}]}}
+
+            if tname == "find_nodes":
+                parent_id = targs["parent"]
+                query = str(targs["query"]).lower()
+                type_filter = targs.get("type")
+                r = self._call_backend_tool("get_node", {"id": parent_id, "depth": 10})
+                txt = r.get("content", [{}])[0].get("text", "{}")
+                matches = []
+                try:
+                    root_node = json.loads(txt)
+                    def walk(curr):
+                        if not isinstance(curr, dict):
+                            return
+                        n = curr.get("name", "")
+                        chars = curr.get("characters", "")
+                        t = curr.get("type", "")
+                        matched = False
+                        if query in n.lower() or query in chars.lower():
+                            if not type_filter or t == type_filter:
+                                matched = True
+                        if matched and curr.get("id") != parent_id:
+                            item = {
+                                "id": curr.get("id"),
+                                "name": n,
+                                "type": t,
+                                "x": curr.get("x"),
+                                "y": curr.get("y"),
+                                "width": curr.get("width"),
+                                "height": curr.get("height"),
+                            }
+                            if chars:
+                                item["text"] = chars
+                            matches.append(item)
+                        for ch in curr.get("children", []):
+                            walk(ch)
+                    walk(root_node)
+                except Exception as exc:
+                    return {"jsonrpc": "2.0", "id": req_id, "result": {"content": [{"type": "text", "text": f"Error searching nodes: {exc}"}], "isError": True}}
+                return {"jsonrpc": "2.0", "id": req_id, "result": {"content": [{"type": "text", "text": json.dumps({"parent": parent_id, "query": query, "count": len(matches), "matches": matches}, indent=2)}]}}
+
             if tname == "get_anti_slop_guidelines":
-                payload = {"tokens": ANTI_SLOP_TOKENS, "banned_patterns": BANNED_PATTERNS, "recipes": COMPONENT_RECIPES}
+                req_style = targs.get("style", "neutral_clean")
+                if req_style == "all":
+                    tokens_payload = STYLE_PRESETS
+                else:
+                    tokens_payload = STYLE_PRESETS.get(req_style, ANTI_SLOP_TOKENS)
+                payload = {
+                    "heuristics": UNIVERSAL_HEURISTICS,
+                    "banned_patterns": BANNED_PATTERNS,
+                    "active_preset": req_style,
+                    "tokens": tokens_payload,
+                    "recipes": COMPONENT_RECIPES,
+                    "few_shot_guidance": FEW_SHOT_GUIDANCE.strip(),
+                }
                 return {"jsonrpc": "2.0", "id": req_id, "result": {"content": [{"type": "text", "text": json.dumps(payload, indent=2)}]}}
 
             if tname == "place_lucide_icon":

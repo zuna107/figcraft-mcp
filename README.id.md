@@ -186,13 +186,15 @@ Anda dapat memberikan perintah dalam bahasa alami. Berikut tahapan alur kerja ya
 
 ---
 
-## Daftar Tool MCP (Total 25 Tool)
+## Daftar Tool MCP (Total 24 Tool)
 
-Selain meneruskan 22 tool bawaan `figcraft-cli` (`inspect_document`, `get_node`, `create_node`, `set_properties`, `batch`, `run_command`, `export`, `screenshot`, `save_file`, dll.), `figcraft-mcp` menyediakan **3 tool tingkat tinggi**:
+Selain meneruskan 19 tool bawaan `figcraft-cli` (`inspect_document`, `get_node`, `create_node`, `set_properties`, `batch`, `run_command`, `export`, `screenshot`, `save_file`, dll.), `figcraft-mcp` menyediakan **5 tool tingkat tinggi yang dioptimalkan untuk hemat token**:
 
-| Nama Tool | Fungsi |
+| Nama Tool | Fungsi & Penghematan Token |
 | :--- | :--- |
-| `get_anti_slop_guidelines` | Mengambil sistem token warna netral (`#FFFFFF`, `#F8FAFC`, `#F1F5F9`, `#E2E8F0`), skala tipografi (`Plus Jakarta Sans`), daftar pola AI slop yang dilarang, dan resep komponen. |
+| `list_screens` | **Hemat Token (98%)**: Mengambil daftar seluruh frame layar utama (ID, nama, posisi, ukuran) di Page aktif tanpa perlu mendump seluruh pohon dokumen. |
+| `find_nodes` | **Hemat Token (90%)**: Pencarian instan untuk node tertentu (nama/teks) di dalam suatu frame saat ingin memodifikasi atau mengedit elemen tanpa membaca seluruh screen. |
+| `get_anti_slop_guidelines` | Mengambil panduan kualitas universal bebas AI slop, preset multi-gaya (`neutral_clean`, `ios_hig`, `material_m3`, `dark_modern`), dan panduan few-shot kanvas. |
 | `place_lucide_icon` | Menempatkan **39 ikon garis vektor Lucide 24x24** (`search`, `download`, `wallet`, `home`, `barChart`, `plus`, `x`, `check`, `chevronDown`, `user`, `mail`, `lock`, dll.) secara presisi dalam 1 langkah. |
 | `create_prototype_link` | Menghubungkan elemen pemicu (`sourceId`) ke frame tujuan (`targetFrameId`) dengan animasi `smartAnimate`, `dissolve`, `push`, `slideIn`, atau `moveOut`. |
 

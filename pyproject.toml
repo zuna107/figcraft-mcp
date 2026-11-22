@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "figcraft-mcp"
-version = "1.0.0"
+version = "1.1.0"
 description = "Universal Live-Streaming MCP Server and Anti-Slop UI Design Engine for FigCraft Desktop"
 readme = "README.md"
 license = { text = "MIT" }

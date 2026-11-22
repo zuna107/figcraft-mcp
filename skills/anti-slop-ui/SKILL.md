@@ -58,3 +58,22 @@ AI models often default to noisy, over-decorated interfaces ("AI slop"). Apply t
   - `1px` `#F1F5F9` divider + clean `+ Category Baru` row (`#1E1E2D` SemiBold).
   - When search has no match: 1 line `Tidak ditemukan` (`#94A3B8`) + 1 bordered `#F8FAFC` action row `+ Category Baru "<query>"`.
 
+---
+
+## 4. Multi-Style Presets & Few-Shot Learning
+
+Anti-Slop is **not** restricted to Shadcn neutral design. It is a set of universal quality heuristics. You can request or adopt different style presets via `get_anti_slop_guidelines(style=...)`:
+
+| Preset Style | Canvas | Cards / Surfaces | Accent / Brand | Font Family |
+| :--- | :--- | :--- | :--- | :--- |
+| `neutral_clean` *(default)* | `#F8F9FA` | `#FFFFFF` (16px radius, subtle border) | `#6C5CE7` | Plus Jakarta Sans |
+| `ios_hig` | `#F2F2F7` | `#FFFFFF` (14px radius, hairline border) | `#007AFF` | Inter / SF Pro |
+| `material_m3` | `#FEF7FF` | `#F7F2FA` (16px radius, filled tonal) | `#6750A4` | Roboto |
+| `dark_modern` | `#09090B` | `#18181B` (16px radius, `#27272A` border) | `#6366F1` | Plus Jakarta Sans |
+
+### Few-Shot Canvas Style Learning
+When an existing project already contains established screens:
+1. Inspect top-level frames using `list_screens`.
+2. Find clean, mature screens (e.g., Screen 4 - Review Transaction, Screen 6 - Manage Wallets in `FinFlow.figcraft`).
+3. Imitate the established canvas background, card corner radii, and input field styling rather than imposing a different preset.
+

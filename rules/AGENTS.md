@@ -2,31 +2,29 @@
 
 Always follow these rules when designing, modifying, or auditing UI screens in FigCraft:
 
-## 1. Zero-Emoji & Vector Icon Policy
-- **NEVER** place Unicode emojis (`✨`, `🔥`, `💰`, `📈`, `🍔`, `🚗`) inside any FigCraft text layer.
-- Always use the `place_lucide_icon` MCP tool (or `figcraft_mcp.icons.icon_cmds` in batch calls) to render crisp 24x24 Lucide vector icons with precomputed bounding-box scaling.
+## 1. Token Preservation & Inspection Efficiency (Strict)
+- **NEVER** call `inspect_document` or `get_node` without depth limits on multi-screen documents (this dumps thousands of nodes and burns tens of thousands of tokens).
+- **Inspect Canvas Fast**: Always call `list_screens` (`{"page": 1}`) first. It returns top-level screen names, IDs, positions, and bounds in < 200 tokens.
+- **Targeted Modifications**: When editing or modifying an existing screen, call `find_nodes(parent=screen_id, query="...")` to look up the exact target node ID instead of dumping the screen hierarchy.
+- **Single Batch Execution**: Always assemble new screens and components inside a single `batch` command using `$ref` back-references. Never call `create_node` sequentially 20-40 times.
 
-## 2. Anti-Slop UI & Neutral Color Discipline
-- **No AI Cliché Badges**: Never add gratuitous `"AI Insight"`, `"AI Matched"`, `"Hasil Scan Struk AI"`, or sparkle pill badges on headers, dropdown triggers, or summary cards.
-- **Restrained Neutral Surfaces**:
-  - Screen Background: `#FFFFFF` (forms/modals) or `#F8F9FA` (dashboard/analytics canvas).
-  - Cards & Containers: `#FFFFFF` with `1px` border `#E2E8F0` and subtle shadow (`#0F172A0D`, offset `[0, 4]`, radius `12`).
-  - Form Inputs & Dropdown Triggers: `#F8FAFC` or `#FFFFFF` fill, `#E2E8F0` or `#CBD5E1` border, `12px` corner radius. Never use loud orange/purple fills (`#FFF7ED`, `#F3F0FF`) on input fields or dropdown triggers.
-- **Clean Segmented Switchers**:
-  - Track: `#F1F2F6` (`height: 40..42px`, `cornerRadius: 12`).
-  - Active Tab Pill: `#FFFFFF` (`height: 32..34px`, `cornerRadius: 9`), text `#1E1E2D` (`Bold`).
-  - Inactive Tab: text `#8F92A1` (`Medium`).
-  - **Never** put red/green arrows or colorful icons inside segmented switcher tabs.
-- **Compact Searchable Dropdowns**:
-  - Limit dropdown menu height (`132px..184px`) so it never stretches across the entire screen.
-  - Include an internal `#F8FAFC` search input bar, neutral `#F1F5F9` active row highlight with `#1E1E2D` check icon, a `4px` vertical scrollbar track (`#F1F5F9`) & thumb (`#CBD5E1`), and a clean sticky footer action (`+ Category Baru`).
-- **Single Primary Action Placement**:
-  - Never duplicate action buttons (e.g., placing `+ Add Wallet` both in the top header and at the bottom of the screen). Place secondary creation triggers cleanly below the summary card (`Total Assets`).
+## 2. Universal Anti-Slop Heuristics (Style-Agnostic)
+These quality heuristics apply to any design style (Shadcn, iOS HIG, Material 3, Dark Modern):
+- **Banish AI Buzzwords & Fluff**: Never add gratuitous "Magic...", "AI-Powered", "AI will auto-fill everything", "✨ AI Matched", or generic quote subtitles ("Manage your finances with confidence today"). Use direct, functional verbs ("Memindai Struk...", "Simpan Transaksi").
+- **Zero-Emoji Policy**: NEVER place Unicode emojis (`✨`, `🔥`, `💰`, `📈`, `🍔`, `🚗`) inside text layers. Always use `place_lucide_icon` or `icon_cmds` for crisp vector icons.
+- **No Arbitrary Canvas Gradients**: Never slap pastel/purple linear gradients on screen backgrounds without deliberate brand justification. Prefer solid, restful surfaces (`#FFFFFF`, `#F8F9FA`, or `#09090B`).
+- **Spacing Grid Discipline**: Follow a strict 4pt/8pt grid (4, 8, 12, 16, 20, 24, 32px) for paddings, gaps, and dimensions.
+- **Real Component States**: Dropdown menus must have max-height (`180px`) and scrollbars for overflow; segmented switchers must have a clear active pill indicator; search inputs must have placeholder states.
+- **Single Primary Action**: Never duplicate primary action buttons in multiple places on one screen.
 
-## 3. Popup & Bottom Sheet Backdrop Rule
+## 3. Few-Shot Style Learning (Match Existing Canvas)
+- When working on an existing `.figcraft` document (like `FinFlow.figcraft`), inspect existing screens with `list_screens`.
+- Identify clean reference screens (e.g. Screen 4 - Review Transaction, Screen 6 - Manage Wallets). Match their surface colors, border treatments, typography scale, and corner radii.
+- For brand-new blank canvases, choose from `get_anti_slop_guidelines(style=...)` presets: `neutral_clean`, `ios_hig`, `material_m3`, or `dark_modern`.
+
+## 4. Popup & Bottom Sheet Backdrop Rule
 - Never place a popup modal or bottom sheet over a blank dark rectangle.
-- Always duplicate the underlying parent screen at `(0, 0)` inside the popup frame (`locked: true`), place a full-screen scrim rectangle (`#0F172A`, `opacity: 0.45`) above it, and render the bottom sheet (`#FFFFFF`, `cornerRadius: [28, 28, 0, 0]`) on top.
+- Always duplicate the underlying parent screen at `(0, 0)` inside the popup frame (`locked: true`), place a full-screen scrim rectangle (`#0F172A`, `opacity: 0.45`) above it, and render the bottom sheet (`cornerRadius: [28, 28, 0, 0]`) on top.
 
-## 4. Live Step-by-Step Cursor Streaming
-- Prefer `batch` (which `figcraft-mcp` automatically streams step-by-step at `40ms` per element with multiplayer cursor movement and live selection highlights) so the user can watch the design assemble in real time on their canvas.
-
+## 5. Live Step-by-Step Cursor Streaming
+- `figcraft-mcp` automatically streams `batch` commands step-by-step with multiplayer cursor movement and live selection highlights. Responses are compactly summarized (`{"status": "success", "created_count": N, "created_ids": [...]}`) to protect token budgets.

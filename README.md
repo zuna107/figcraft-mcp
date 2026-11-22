@@ -204,13 +204,15 @@ You can talk to your AI agent in natural language. Here is the recommended workf
 
 ---
 
-## Available MCP Tools (25 Total)
+## Available MCP Tools (24 Total)
 
-In addition to forwarding all 22 native FigCraft CLI tools (`inspect_document`, `get_node`, `create_node`, `set_properties`, `batch`, `run_command`, `export`, `screenshot`, `save_file`, `open_file`, `pointer`, `key`, `type_text`, `select`, `undo`, `redo`, etc.), `figcraft-mcp` injects **3 specialized tools**:
+In addition to forwarding native FigCraft CLI tools (`inspect_document`, `get_node`, `create_node`, `set_properties`, `batch`, `run_command`, `export`, `screenshot`, `save_file`, `open_file`, `pointer`, `key`, `type_text`, `select`, `undo`, `redo`, etc.), `figcraft-mcp` injects **5 specialized, token-optimized tools**:
 
-| Tool Name | Description |
+| Tool Name | Description & Token Efficiency |
 | :--- | :--- |
-| `get_anti_slop_guidelines` | Returns the neutral color tokens (`#FFFFFF`, `#F8FAFC`, `#F1F5F9`, `#E2E8F0`), typography scale (`Plus Jakarta Sans`), banned AI clichés, and component recipes. |
+| `list_screens` | **Token Saver (98%)**: High-speed overview of all top-level screen frames on the active page (IDs, names, positions, sizes) without dumping the deep node tree. |
+| `find_nodes` | **Token Saver (90%)**: Substring search for target layers (by name or text content) within a specific frame, ideal for targeted modifications and edits. |
+| `get_anti_slop_guidelines` | Returns universal anti-slop quality heuristics, multi-style presets (`neutral_clean`, `ios_hig`, `material_m3`, `dark_modern`), component recipes, and few-shot guidance. |
 | `place_lucide_icon` | Places any of **39 pre-scaled 24x24 Lucide vector icons** (`search`, `download`, `wallet`, `home`, `barChart`, `plus`, `x`, `check`, `chevronDown`, `user`, `mail`, `lock`, etc.) with 0 extra RPC round-trips. |
 | `create_prototype_link` | Connects a clickable source node (`sourceId`) to a target screen frame (`targetFrameId`) with `smartAnimate`, `dissolve`, `push`, `slideIn`, or `moveOut` transitions. |
 

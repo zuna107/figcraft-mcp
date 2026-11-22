@@ -12,6 +12,8 @@
   <a href="https://github.com/zuna107/figcraft-mcp/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-F59E0B?style=flat-square" alt="License MIT" /></a>
 </p>
 
+[![M8ven Score](https://m8ven.ai/badge/mcp/zuna107-figcraft-mcp-1g684d?v=538003b828bbbd286c844ff1027437f6)](https://m8ven.ai/mcp/zuna107-figcraft-mcp-1g684d?s=readme)
+
 <p>
   <b>English</b> · <a href="https://github.com/zuna107/figcraft-mcp/blob/main/README.id.md">Bahasa Indonesia (README.id.md)</a> · <a href="https://github.com/zuna107/figcraft-mcp/releases">Releases</a> · <a href="https://github.com/zuna107/figcraft-mcp/blob/main/CONTRIBUTING.md">Contributing</a>
 </p>

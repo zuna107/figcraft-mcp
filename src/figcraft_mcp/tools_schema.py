@@ -7,6 +7,18 @@ from .icons import ICONS
 
 EXTRA_TOOLS = [
     {
+        "name": "join_live_session",
+        "description": "Join a FigCraft Live Collaboration session using a figcraft://join?... link or join code, wait until live sync completes, and lock all subsequent design tools onto the shared live document.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "link": {"type": "string", "description": "Full figcraft://join?host=... link or join code"},
+                "userName": {"type": "string", "default": "Antigravity AI", "description": "Collaborator display name"},
+            },
+            "required": ["link"],
+        },
+    },
+    {
         "name": "list_screens",
         "description": "Fast and token-efficient overview of all top-level screen frames on the page (IDs, names, positions, sizes). Uses outline projection to save 90%+ tokens.",
         "inputSchema": {

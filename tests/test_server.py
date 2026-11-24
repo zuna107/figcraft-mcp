@@ -43,6 +43,7 @@ class TestFigCraftMCPPackage(unittest.TestCase):
 
     def test_extra_mcp_tools_schema(self):
         names = [t["name"] for t in EXTRA_TOOLS]
+        self.assertIn("join_live_session", names)
         self.assertIn("list_screens", names)
         self.assertIn("find_nodes", names)
         self.assertIn("create_from_template", names)

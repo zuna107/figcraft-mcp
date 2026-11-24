@@ -5,6 +5,7 @@ Keeps server.py clean, robust, and well under 250 lines.
 """
 
 import json
+import time
 from .icons import icon_cmds
 from .tokens import (
     ANTI_SLOP_TOKENS,
@@ -215,3 +216,42 @@ def handle_extract_canvas_tokens(server, targs: dict) -> dict:
         pass
 
     return {"content": [{"type": "text", "text": json.dumps(tokens, indent=2)}]}
+
+
+def handle_join_live_session(server, targs: dict) -> dict:
+    """Join a FigCraft Live Session, poll until live sync completes, and lock live_doc_id."""
+    user_name = targs.get("userName", "Antigravity AI")
+    server._call_backend_tool("run_command", {"command": "pref.userName", "params": {"name": user_name}})
+    server.live_doc_id = None
+    server.node_origins.clear()
+
+    join_params = {}
+    if "link" in targs:
+        join_params["link"] = targs["link"]
+    if "code" in targs:
+        join_params["code"] = targs["code"]
+
+    res = server._call_backend_tool("run_command", {"command": "collab.join", "params": join_params})
+    if res.get("isError"):
+        return res
+
+    peers_info = {}
+    for _ in range(24):
+        time.sleep(0.25)
+        try:
+            p_res = server._call_backend_tool("run_command", {"command": "collab.peers"})
+            peers_info = json.loads(p_res.get("content", [{}])[0].get("text", "{}"))
+            if isinstance(peers_info, dict) and peers_info.get("status") == "live":
+                break
+        except Exception:
+            continue
+
+    server._detect_live_doc(force_refresh=True)
+    summary = {
+        "status": peers_info.get("status", "unknown"),
+        "document": server.live_doc_id,
+        "fileName": peers_info.get("fileName"),
+        "role": peers_info.get("role"),
+        "pages": peers_info.get("pages", []),
+    }
+    return {"content": [{"type": "text", "text": json.dumps(summary, indent=2)}]}

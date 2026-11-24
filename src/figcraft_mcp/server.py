@@ -31,6 +31,7 @@ if __package__ in (None, ""):
         handle_find_nodes,
         handle_get_anti_slop_guidelines,
         handle_inspect_code,
+        handle_join_live_session,
         handle_list_screens,
         handle_place_lucide_icon,
     )
@@ -54,6 +55,7 @@ else:
         handle_find_nodes,
         handle_get_anti_slop_guidelines,
         handle_inspect_code,
+        handle_join_live_session,
         handle_list_screens,
         handle_place_lucide_icon,
     )
@@ -100,7 +102,7 @@ class FigCraftMCPServer:
         if self.live_doc_id is not None and "document" not in arguments:
             if name not in ("open_file", "pointer", "key", "type_text", "inspect_ui", "list_commands"):
                 cmd_name = arguments.get("command") if name == "run_command" else None
-                if cmd_name not in ("collab.peers", "doc.list", "pref.userName", "collab.share"):
+                if cmd_name not in ("collab.peers", "doc.list", "pref.userName", "collab.share", "collab.join"):
                     arguments = {**arguments, "document": self.live_doc_id}
         res = self._rpc_backend("tools/call", {"name": name, "arguments": arguments})
         return res.get("result", {"content": [{"type": "text", "text": json.dumps(res.get("error", {}))}], "isError": True})
@@ -154,7 +156,7 @@ class FigCraftMCPServer:
             except Exception:
                 pass
 
-    def _detect_live_doc(self):
+    def _detect_live_doc(self, force_refresh: bool = False):
         try:
             res = self._call_backend_tool("run_command", {"command": "doc.list"})
             txt = res.get("content", [{}])[0].get("text", "[]")
@@ -163,16 +165,16 @@ class FigCraftMCPServer:
                 return
             p_res = self._call_backend_tool("run_command", {"command": "collab.peers"})
             peers = json.loads(p_res.get("content", [{}])[0].get("text", "{}"))
-            if isinstance(peers, dict) and peers.get("status") == "live":
-                for d in docs:
-                    if d.get("active"):
-                        self.live_doc_id = d["id"]
-                        self._ensure_peer_joined(peers)
-                        return
-                self.live_doc_id = docs[0]["id"]
-                self._ensure_peer_joined(peers)
+            is_live = isinstance(peers, dict) and peers.get("status") == "live"
+            active_docs = [d for d in docs if d.get("active")]
+            target_doc = active_docs[-1]["id"] if active_docs else docs[-1]["id"]
+            if is_live:
+                self.live_doc_id = target_doc
+                if peers.get("role") != "guest":
+                    self._ensure_peer_joined(peers)
                 return
-            self.live_doc_id = docs[0]["id"]
+            if force_refresh or self.live_doc_id is None:
+                self.live_doc_id = target_doc
         except Exception:
             pass
 
@@ -206,6 +208,7 @@ class FigCraftMCPServer:
                 self._detect_live_doc()
 
             handlers = {
+                "join_live_session": lambda: handle_join_live_session(self, targs),
                 "list_screens": lambda: handle_list_screens(self, targs),
                 "find_nodes": lambda: handle_find_nodes(self, targs),
                 "get_anti_slop_guidelines": lambda: handle_get_anti_slop_guidelines(targs),
@@ -228,11 +231,7 @@ class FigCraftMCPServer:
                     targs.pop("height", None)
 
             if tname == "run_command" and targs.get("command") == "collab.join":
-                self._call_backend_tool("run_command", {"command": "pref.userName", "params": {"name": "Antigravity AI"}})
-                res = self._call_backend_tool(tname, targs)
-                time.sleep(0.8)
-                self._detect_live_doc()
-                return {"jsonrpc": "2.0", "id": req_id, "result": res}
+                return {"jsonrpc": "2.0", "id": req_id, "result": handle_join_live_session(self, targs.get("params", {}))}
 
             return {"jsonrpc": "2.0", "id": req_id, "result": self._call_backend_tool(tname, targs)}
 

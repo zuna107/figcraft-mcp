@@ -260,6 +260,10 @@ class FigCraftMCPServer:
 
 
 def main():
+    if hasattr(sys.stdin, "reconfigure"):
+        sys.stdin.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     if len(sys.argv) > 1 and sys.argv[1] in ("setup", "--setup", "install"):
         if __package__ in (None, ""):
             from figcraft_mcp.setup_cli import run_setup
